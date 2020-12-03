@@ -1,10 +1,10 @@
 from app import app, db
 from models.user import User
 from models.contact import Contact
-from models.want import Want
+# from models.want import Want
 
 with app.app_context():
-  db.drop_all()
+
   db.create_all()
 
   adam = User(
@@ -24,7 +24,7 @@ with app.app_context():
   
   print('starting users created')
   
-  want1 = 'Book'
+
 
   friend1 = Contact(
     name='Jon',
@@ -36,7 +36,7 @@ with app.app_context():
     name='Bob',
     birthday='02/01/2010',
     user=florian,
-    wants=[want1]
+    wants=['Book']
   )
   
   db.session.add(friend1)
