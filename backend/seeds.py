@@ -1,6 +1,7 @@
 from app import app, db
 from models.user import User
 from models.contact import Contact
+from models.want import Want
 
 with app.app_context():
   db.drop_all()
@@ -20,20 +21,28 @@ with app.app_context():
 
   adam.save()
   florian.save()
+  
   print('starting users created')
+  
+  want1 = 'Book'
+
   friend1 = Contact(
     name='Jon',
     birthday='02/03/2001',
     user=adam
   )
+  
   friend2 = Contact(
     name='Bob',
     birthday='02/01/2010',
-    user=florian
+    user=florian,
+    wants=[want1]
   )
+  
   db.session.add(friend1)
   db.session.add(friend2)
   db.session.commit()
+  
   print('we have friends')
 
 
