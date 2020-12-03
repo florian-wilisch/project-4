@@ -36,4 +36,6 @@ class User(db.Model, BaseModel):
       'HS256'
     ).decode('utf-8')
 
+    # contacts = db.relationship('Contacts', secondary=teas_notes_join, backref='teas')
+
     return token

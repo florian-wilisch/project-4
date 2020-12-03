@@ -42,7 +42,7 @@ def get_single_user(id):
 ## Get Populated USER
 @router.route('/users-pop/<int:id>', methods=['GET'])
 # @secure_route
-def get_single_user(id):
+def get_single_pop_user(id):
   user = User.query.get(id)
   if not user:
     return { 'message': 'User not available' }, 404
