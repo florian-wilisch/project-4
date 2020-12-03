@@ -11,4 +11,5 @@ class UserPopSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
     exclude = ('password_hash',)
     load_only = ('email', 'password')
   password = fields.String(required=True)
+  
   contacts = fields.Nested('ContactSchema', many=True)
