@@ -23,7 +23,5 @@ def login():
     return { 'message': 'No user found with this email'}, 200
   if not user.validate_password(data['password']):
     return {'message': ' Unauthorized'}, 402
-
   token = user.generate_token()
-
   return {'token': token, 'message': 'Welcome back'}
