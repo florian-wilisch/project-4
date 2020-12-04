@@ -14,9 +14,9 @@ ma = Marshmallow(app)
 
 bcrypt = Bcrypt(app)
 
-from controllers import users
+from controllers import users, contacts
 
-# app.register_blueprint(contacts.router, url_prefix='/api')
+app.register_blueprint(contacts.router, url_prefix='/api')
 app.register_blueprint(users.router, url_prefix='/api')
 
 

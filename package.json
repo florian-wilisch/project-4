@@ -29,6 +29,7 @@
     "@untemps/react-vocal": "^1.4.1",
     "axios": "^0.21.0",
     "fn": "^0.2.0",
+    "fs": "0.0.1-security",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

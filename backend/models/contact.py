@@ -4,7 +4,7 @@ from models.user import User
 
 class Contact(db.Model, BaseModel):
   __tablename__ = 'contacts'
-  name = db.Column(db.String(40), nullable=False)
+  name = db.Column(db.String(40), nullable=False, unique=True)
   birthday = db.Column(db.String(40), nullable=True)
   wants = db.Column(db.ARRAY(db.String(40)), nullable=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

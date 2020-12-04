@@ -3,6 +3,8 @@ import axios from 'axios'
 import regeneratorRuntime from "regenerator-runtime";
 import Vocal from '@untemps/react-vocal'
 
+let contactFound = false
+
 
 const Home = () => {
   const [searchVal, getSearchVal] = useState('')
@@ -12,6 +14,8 @@ const Home = () => {
   const [natLangResult, setNatLangResult] = useState([])
   const [currentBirthday, setCurrentBirthday] = useState('None')
   const [currentWant, setCurrentWant] = useState('None')
+  const [contactList, setContactList] = useState([])
+  // const [contactFound, setContactFound] = useState(false)
 
   const NatLangUrl = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${process.env.GoogleNatLangKey}`
   // console.log(NatLangUrl)
@@ -33,12 +37,83 @@ const Home = () => {
       })
   }, [updateSearch])
 
-  // useEffect(() => {
-  //   axios.get('/api/users/1')
-  //     .then(axiosResp => {
-  //       console.log(axiosResp.data.contacts)
-  //     })
-  // })
+  useEffect(() => {
+    axios.get('/api/users/1')
+      .then(axiosResp => {
+        setContactList(axiosResp.data.contacts)
+
+      })
+
+  }, [])
+
+
+  function getContactName(name) {
+
+    setTimeout(() => {
+      console.log("LEN", contactList.length - 1)
+      for (let i = 0; i < contactList.length; i++) {
+        // console.log("Friend name", contactList[i]['name'])
+        // console.log('NATLANG result', name)
+        if (contactList[i]['name'] === name) {
+          contactFound = true
+          console.log('FOUND')
+          console.log(contactList[i])
+          addContactWant(contactList[i]['id'], currentWant)
+        }
+      }
+      if (contactFound === false) {
+        // console.log("RETURN THE BETTER FUNCT")
+        addNewContact(name, currentWant)
+      }
+    }, 1000)
+
+  }
+
+  function addContactWant(id, want) {
+    axios.get(`/api/users/1/contacts/${id}`)
+      .then(resp => {
+        const currentWant = resp.data['wants']
+        if (currentWant.includes(want) == false) {
+          currentWant.push(want)
+        }
+        axios.put(`/api/users/1/contacts/${id}`, {
+          'name': resp.data['name'],
+          'wants': currentWant
+        })
+      })
+
+  }
+  function addContactBirthday(id, birthday) {
+    axios.get(`/api/users/1/contacts/${id}`)
+      .then(resp => {
+        axios.put(`/api/users/1/contacts/${id}`, {
+          'name': resp.data['name'],
+          'birthday': currentBirthday
+        })
+      })
+
+  }
+
+  function addNewContact(name, want) {
+    console.log(want)
+    axios.post('api/users/1/contacts', {
+      'name': name,
+      'wants': []
+    })
+      .then((response) => {
+        // Check if we also want to add a "want":
+        if (currentWant !== 'None') {
+          addContactWant(response.data['id'], currentWant)
+        }
+        // Check if we want to add a birthday:
+        if (currentBirthday !== 'None') {
+          console.log()
+          addContactBirthday(response.data['id'], currentBirthday)
+        }
+      })
+
+  }
+
 
 
   useEffect(() => {
@@ -53,10 +128,18 @@ const Home = () => {
         }
       }
       if (element['type'] === 'DATE') {
-        setCurrentBirthday(element['name'])
-        console.log(element['name'])
+        let day = element['metadata']['day']
+        let month = element['metadata']['month']
+        if (Number(element['metadata']['day']) < 10 ){
+          day = '0' + element['metadata']['day']
+        }
+        if (Number(element['metadata']['month']) < 10 ){
+          month = '0' + element['metadata']['month']
+        }
+        setCurrentBirthday(day + '/' + month)
+        console.log(element['metadata']['day'] + '/' + element['metadata']['month'])
       }
-      if (element['type'] === 'CONSUMER_GOOD') {
+      if ((element['type'] === 'CONSUMER_GOOD') || (element['type'] === 'WORK_OF_ART')) {
         setCurrentWant(element['name'])
       }
     }
@@ -115,7 +198,9 @@ const Home = () => {
       <h1>birthday: {currentBirthday}</h1>
       <h1>Wants: {currentWant}</h1>
       <button onClick={(e) => {
-        console.log('clicked')
+        if (currentContact.toLowerCase() !== 'none') {
+          getContactName(currentContact.toLowerCase())
+        }
       }
       }>Click test</button>
 

@@ -48,6 +48,9 @@ module.exports = () => {
         inject: 'body'
       }),
       env
-    ]
+    ],
+    node: {
+      fs: "empty"
+    }
   }
 }

@@ -27,20 +27,32 @@ with app.app_context():
 
 
   friend1 = Contact(
-    name='Jon',
+    name='jon',
     birthday='02/03/2001',
-    user=adam
+    user=adam,
+    wants = []
+  )
+  friend3 = Contact(
+    name='jim',
+    birthday='02/03/2001',
+    user=adam,
+    wants = []
+  )
+  friend4 = Contact(
+    name='george',
+    birthday='02/03/2001',
+    user=adam,
+    wants = []
   )
   
   friend2 = Contact(
-    name='Bob',
+    name='bob',
     birthday='02/01/2010',
     user=florian,
     wants=['Book']
   )
   
-  db.session.add(friend1)
-  db.session.add(friend2)
+  db.session.add_all([friend1,friend2,friend3,friend4])
   db.session.commit()
   
   print('we have friends')
