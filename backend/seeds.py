@@ -37,12 +37,17 @@ with app.app_context():
     user=florian,
     wants=['Book']
   )
+
+  friend3 = Contact(
+    name='Sarah',
+    birthday='02/01/2010',
+    user=florian,
+    wants=['bike', 'laptop', 'helicopter']
+  )
   
   db.session.add(friend1)
   db.session.add(friend2)
+  db.session.add(friend3)
   db.session.commit()
   
   print('we have friends')
-
-
-  
