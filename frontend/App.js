@@ -4,6 +4,8 @@ import './styles/style.scss'
 
 // ! Some starter code for your frontends, change this
 // ! however you like.
+import Home from './components/Home'
+
 const App = () => (
   <BrowserRouter>
     <Switch>
@@ -13,9 +15,9 @@ const App = () => (
   </BrowserRouter>
 )
 
-const Home = () => <Link to={'/hello/world'}>
-  Go to /hello/world page.
-</Link>
+// const Home = () => <Link to={'/hello/world'}>
+//   Go to /hello/world page.
+// </Link>
 
 const MyPage = () => {
   return <p>

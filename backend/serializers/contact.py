@@ -10,4 +10,5 @@ class ContactSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
     load_only = ('user_id',)
   # user_id = fields.Integer()
   # user = fields.Nested('UserSchema', only=('id', 'username'))
+  # user = fields.Nested('UserSchema', only=('id', 'username'))
   # wants = fields.Nested('WantSchema', many=True)
