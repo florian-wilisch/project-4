@@ -2,14 +2,19 @@ import React from 'react'
 import { BrowserRouter, Switch, Link, Route } from 'react-router-dom'
 import './styles/style.scss'
 
-// ! Some starter code for your frontends, change this
-// ! however you like.
+
 import Home from './components/Home'
+import Navbar from './components/Navbar'
+import Account from './components/Account'
+import Login from './components/Login'
 
 const App = () => (
   <BrowserRouter>
+    <Navbar />
     <Switch>
       <Route exact path="/" component={Home} />
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/account" component={Account} />
       <Route exact path="/hello/world" component={MyPage} />
     </Switch>
   </BrowserRouter>

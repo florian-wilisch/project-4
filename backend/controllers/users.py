@@ -21,18 +21,19 @@ def signup():
   return user_schema.jsonify(user), 200
 
 
-@router.route('/login',methods=['POST'])
+@router.route('/login', methods=['POST'])
 def login():
   data = request.get_json()
   user = User.query.filter_by(email=data['email']).first()
-
+  print(user)
   if not user:
     return { 'message': 'No user found with this email'}, 200
   if not user.validate_password(data['password']):
     return {'message': ' Unauthorized'}, 402
   token = user.generate_token()
-
-  return {'token': token, 'message': 'Welcome back'}
+  user_name = user.username
+  user_id = user.id
+  return {'token': token, 'user_name': user_name, 'user_id': user_id, 'message': 'Welcome back'}
 
 ## * Get USER
 @router.route('/users-only/<int:id>', methods=['GET'])

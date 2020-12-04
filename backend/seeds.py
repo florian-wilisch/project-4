@@ -25,19 +25,13 @@ with app.app_context():
   print('starting users created')
   
 
-
   friend1 = Contact(
     name='jon',
     birthday='02/03/2001',
     user=adam,
     wants = []
   )
-  friend3 = Contact(
-    name='jim',
-    birthday='02/03/2001',
-    user=adam,
-    wants = []
-  )
+
   friend4 = Contact(
     name='george',
     birthday='02/03/2001',
@@ -51,11 +45,15 @@ with app.app_context():
     user=florian,
     wants=['Book']
   )
+
+  friend3 = Contact(
+    name='Sarah',
+    birthday='02/04/2004',
+    user=florian,
+    wants=['bike', 'laptop', 'helicopter']
+  )
   
   db.session.add_all([friend1,friend2,friend3,friend4])
   db.session.commit()
   
   print('we have friends')
-
-
-  

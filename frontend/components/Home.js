@@ -130,10 +130,10 @@ const Home = () => {
       if (element['type'] === 'DATE') {
         let day = element['metadata']['day']
         let month = element['metadata']['month']
-        if (Number(element['metadata']['day']) < 10 ){
+        if (Number(element['metadata']['day']) < 10) {
           day = '0' + element['metadata']['day']
         }
-        if (Number(element['metadata']['month']) < 10 ){
+        if (Number(element['metadata']['month']) < 10) {
           month = '0' + element['metadata']['month']
         }
         setCurrentBirthday(day + '/' + month)
@@ -173,37 +173,44 @@ const Home = () => {
     }
   }, [updateSearch])
 
-  return <section>
-    <span style={{ position: 'relative' }}>
-      <Vocal
-        onStart={_onVocalStart}
-        onResult={_onVocalResult}
-        style={{ width: 16, position: 'absolute', right: 10, top: -2 }}
-      />
-      <input defaultValue={result} style={{ width: 300, height: 40 }} />
-    </span>
-    <div>
-      <form onSubmit={(e) => {
-        e.preventDefault()
-        console.log(searchVal)
-        setUpdateSearch(true)
-      }}>
-        <input placeholder="Input Request" onChange={(e) => {
-          getSearchVal(e.target.value.toLocaleLowerCase())
-        }}></input>
-        <button>Submit</button>
-      </form>
-      <h1>Contact: {currentContact}</h1>
-      <h1>Request type: {currentEvent}</h1>
-      <h1>birthday: {currentBirthday}</h1>
-      <h1>Wants: {currentWant}</h1>
-      <button onClick={(e) => {
-        if (currentContact.toLowerCase() !== 'none') {
-          getContactName(currentContact.toLowerCase())
-        }
-      }
-      }>Click test</button>
+  return <section className='hero is-fullheight-with-navbar'>
+    <div className="hero-body is-align-items-center has-text-centered">
+      <div className="container has-text-centered">
 
+
+
+        <span style={{ position: 'relative' }}>
+          <Vocal
+            onStart={_onVocalStart}
+            onResult={_onVocalResult}
+            style={{ width: 16, position: 'absolute', right: 10, top: -2 }}
+          />
+          <input defaultValue={result} style={{ width: 300, height: 40 }} />
+        </span>
+        <div>
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            console.log(searchVal)
+            setUpdateSearch(true)
+          }}>
+            <input placeholder="Input Request" onChange={(e) => {
+              getSearchVal(e.target.value.toLocaleLowerCase())
+            }}></input>
+            <button>Submit</button>
+          </form>
+          <h1>Contact: {currentContact}</h1>
+          <h1>Request type: {currentEvent}</h1>
+          <h1>birthday: {currentBirthday}</h1>
+          <h1>Wants: {currentWant}</h1>
+          <button onClick={(e) => {
+            if (currentContact.toLowerCase() !== 'none') {
+              getContactName(currentContact.toLowerCase())
+            }
+          }
+          }>Click test</button>
+        </div>
+
+      </div>
     </div>
   </section>
 }
