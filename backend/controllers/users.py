@@ -4,7 +4,7 @@ from models.contact import Contact
 from serializers.user import UserSchema
 from serializers.user_populate import UserPopSchema
 from serializers.contact import ContactSchema
-# from serializers.want import WantSchema
+from serializers.want import WantSchema
 from marshmallow import ValidationError
 
 user_schema = UserSchema()

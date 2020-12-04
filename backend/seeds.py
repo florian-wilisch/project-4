@@ -24,7 +24,7 @@ with app.app_context():
   
   print('starting users created')
   
-  want1 = 'Book'
+  want1 = Want(name='Book')
 
   friend1 = Contact(
     name='Jon',
