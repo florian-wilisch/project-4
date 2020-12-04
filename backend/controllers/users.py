@@ -90,3 +90,11 @@ def update_contact(user_id, contact_id):
   contact.save()
 
   return contact_schema.jsonify(contact), 201
+
+@router.route('/users/<int:user_id>/contacts', methods=['GET'])
+def get_all_contacts(user_id):
+  contact_list = []
+  for contact in Contact.query.all():
+    if contact.user_id == user_id:
+      contact_list.append(contact)
+  return contact_schema.jsonify(contact_list, many=True), 200
