@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-regular-svg-icons'
 
 
 
@@ -14,21 +16,56 @@ const FriendCard = (props) => {
   // for (let i = 0; i < props.elem.wants; i++) {
   //   console.log('wants:', props.elem.wants)
   // }
+  const [isActive, setisActive] = useState(false)
+
+  function handleContactEdit() {
+    console.log('clicked')
+    return <p>hello world</p>
+  }
 
 
-  return <section style={{}}>
 
-    <h1 style={{ fontSize: '20px', fontWeight: '800', paddingLeft: '5px' }}>{capitalizeFirstLetter(props.elem.name)}:</h1>
-    <div style={{ backgroundColor: '#ff857ca6', marginBottom: '15px', border: '5px solid #99B898' }}>
-      <div style={{ paddingLeft: '5px', borderBottom: '5px solid #99b898' }}>Birthday: {props.elem.birthday}</div>
-
-      <div>
-        <ul style={{ marginLeft: '30px', listStyleType: 'disc' }}>
-          {props.elem.wants.map((elem, index) => <li key={index}>{capitalizeFirstLetter(elem)}</li>)}
-        </ul>
+  return <div className='media'>
+    <div className='media-content'>
+      <div className='content'>
+        <p>
+          <strong>{capitalizeFirstLetter(props.elem.name)}</strong> 
+          <br />
+          {props.elem.birthday && `Birthday: ${props.elem.birthday}`}  
+          {/* <br /> */}
+        </p>
+        {(props.elem.wants && (props.elem.wants.length !== 0 )) && <div>
+          Wishes/Likes:
+          <ul>
+            {props.elem.wants.map((elem, index) => <li key={index}>
+              <div className="level-item">
+                  • {capitalizeFirstLetter(elem)}
+              </div>
+            </li>)}
+          </ul>
+        </div>}
       </div>
     </div>
-  </section>
+
+    <div className='media-right '>
+      <div className={`dropdown is-right is-hoverable ${isActive ? 'is-active' : ''}`}>
+        <div className="dropdown-trigger">
+          {/* <button className="delete" onClick={() => setisActive(!isActive)}aria-haspopup="true" aria-controls="dropdown-menu6"></button> */}
+          <FontAwesomeIcon className='FAicon mr-1' icon={faEdit} pull="right" size='1x' onClick={() => setisActive(!isActive)}/>
+        </div>
+        <div className="dropdown-menu" id="dropdown-menu6" role="menu">
+          <div className="dropdown-content">
+            <div className="dropdown-item">
+              <p>Edit</p>
+            </div>
+            <div className="dropdown-item">
+              <p>Delete</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 }
 
 
@@ -41,9 +78,10 @@ const Account = () => {
 
 
   useEffect(() => {
-    axios.get(`api/users/1`)
+    axios.get(`api/users/${userId}`)
       .then(resp => {
         console.log(resp.data)
+        // console.log(userId)
         setUserData(resp.data)
         setUserContacts(resp.data.contacts)
         // for (let i = 0; i < userContacts.length; i++){
@@ -52,6 +90,9 @@ const Account = () => {
         // }
       })
   }, [])
+
+
+
 
 
 
@@ -68,94 +109,11 @@ const Account = () => {
 
   return <section className='section mt-6'>
     <h1 className='title'>Contacts</h1>
-
-
-    {/* <button onClick={() => {
-    }
-    }>Test</button> */}
-
-    <section>
+    {/* <button onClick={() => {}}>Test</button> */}
+    <div>
       {userContacts.map((elem, index) => <FriendCard elem={elem} key={index}></FriendCard>)}
-    </section>
-
-    <article className='media'>
-      {/* <figure className='media-left'>
-            <p className='image is-64x64'>
-              <img src='https://bulma.io/images/placeholders/128x128.png'/>
-            </p>
-          </figure> */}
-      <div className='media-content'>
-        <div className='content'>
-          <p>
-            <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
-            <br />
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
-              </p>
-        </div>
-        <nav className='level is-mobile'>
-          <div className='level-left'>
-            <a className='level-item'>
-              <span className='icon is-small'><i className='fas fa-reply'></i></span>
-            </a>
-            <a className='level-item'>
-              <span className='icon is-small'><i className='fas fa-retweet'></i></span>
-            </a>
-            <a className='level-item'>
-              <span className='icon is-small'><i className='fas fa-heart'></i></span>
-            </a>
-          </div>
-        </nav>
-      </div>
-      <div className='media-right'>
-        <button className='delete'></button>
-      </div>
-    </article>
-
-
-
-  </section>
-
-
-  {/* <div className='section'>
-    <div className='container'>
-      
-      <div className='notifications is-primary'>
-        {userData.contacts.map((contact, index) => {
-          return <div key={index} >
-            <Link to={`/locations/${location._id}`}>
-            <div className='tile is-parent px-0'>
-              <div className='tile is-child box'>
-
-                <div className='columns'>
-                  <div className='column'>
-                    <p className='title is-4'>{location.name}</p>
-                    <div className='tags'>
-                      {location.category.map((category, index) => {
-                        return <div className='tag is-warning' key={index}>
-                          {category}
-                        </div>
-                      })}
-                    </div>
-                    <p className='subtitle is-6'>{'City: ' + location.city}</p>
-                    {location.bio && <p className='subtitle is-6'>{'About: ' + location.bio}</p>}
-                  </div>
-                  <div className='column'>
-                    {location.image && <img className='locationsImage' src={location.image} alt={location.name} />}
-                  </div>
-
-                </div>
-              </div>
-        
-            </div>
-            </Link>
-          </div>
-        })}
-      </div>
-  
     </div>
-  </div> */}
-
-
+  </section>
 
 }
 

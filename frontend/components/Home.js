@@ -36,8 +36,8 @@ const Home = () => {
     $.ajax({
       url: "./quickstart.py"
     }).done(function () {
-      alert('finished python script');
-    });
+      alert('finished python script')
+    })
   }
 
   function formatWants(list){
