@@ -50,7 +50,9 @@ module.exports = () => {
       env
     ],
     node: {
-      fs: "empty"
+      fs: "empty",
+      child_process: 'empty'
     }
+
   }
 }

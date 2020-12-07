@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import regeneratorRuntime from "regenerator-runtime";
 import Vocal from '@untemps/react-vocal'
+import { Link } from 'react-router-dom';
+var $ = require("jquery");
 
 let contactFound = false
+let requestType = []
 
 
 const Home = () => {
@@ -14,12 +17,25 @@ const Home = () => {
   const [natLangResult, setNatLangResult] = useState([])
   const [currentBirthday, setCurrentBirthday] = useState('None')
   const [currentWant, setCurrentWant] = useState('None')
+  const [wantList, setWantList] = useState([])
   const [contactList, setContactList] = useState([])
+  // const [requestType, setRequestType] = useState([])
+
   // const [contactFound, setContactFound] = useState(false)
 
   const NatLangUrl = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${process.env.GoogleNatLangKey}`
   // console.log(NatLangUrl)
-  const birthKeyWords = ['birthday', 'born on']
+  const birthKeyWords = ['birthday', 'born']
+
+
+  function goPython() {
+    $.ajax({
+      url: "./quickstart.py"
+    }).done(function () {
+      alert('finished python script');
+    });
+  }
+
 
 
   useEffect(() => {
@@ -41,45 +57,51 @@ const Home = () => {
     axios.get('/api/users/1')
       .then(axiosResp => {
         setContactList(axiosResp.data.contacts)
-
       })
-
   }, [])
 
 
   function getContactName(name) {
-
     setTimeout(() => {
-      console.log("LEN", contactList.length - 1)
       for (let i = 0; i < contactList.length; i++) {
         // console.log("Friend name", contactList[i]['name'])
         // console.log('NATLANG result', name)
         if (contactList[i]['name'] === name) {
+          setWantList(contactList[i]['wants'])
+          console.log('wantlist:', wantList)
           contactFound = true
           console.log('FOUND')
           console.log(contactList[i])
-          addContactWant(contactList[i]['id'], currentWant)
+          if (requestType.includes('WANT')) {
+            addContactWant(contactList[i]['id'], currentWant)
+          }
+          if (requestType.includes('BIRTHDAY')) {
+            addContactBirthday(contactList[i]['id'])
+          }
         }
       }
       if (contactFound === false) {
         // console.log("RETURN THE BETTER FUNCT")
         addNewContact(name, currentWant)
       }
-    }, 1000)
 
+    }, 1000)
   }
 
   function addContactWant(id, want) {
     axios.get(`/api/users/1/contacts/${id}`)
       .then(resp => {
         const currentWant = resp.data['wants']
-        if (currentWant.includes(want) == false) {
-          currentWant.push(want)
-        }
+        for (let i = 0; i < want.length; i++)
+          if (currentWant.includes(want[i]) === false) {
+            currentWant.push(want[i])
+          }
+        console.log('WANT TEST:', typeof want)
         axios.put(`/api/users/1/contacts/${id}`, {
           'name': resp.data['name'],
           'wants': currentWant
         })
+        console.log(`Added ${want} to ${resp.data['name']}'s want list`)
       })
 
   }
@@ -91,32 +113,40 @@ const Home = () => {
           'birthday': currentBirthday
         })
       })
-
   }
 
+
   function addNewContact(name, want) {
-    console.log(want)
+    console.log(`Created new contact: ${name}`)
     axios.post('api/users/1/contacts', {
       'name': name,
       'wants': []
     })
       .then((response) => {
+        console.log('TYPE', requestType)
         // Check if we also want to add a "want":
-        if (currentWant !== 'None') {
+        if (requestType.includes('WANT')) {
+          console.log("REACHED WANT")
           addContactWant(response.data['id'], currentWant)
         }
         // Check if we want to add a birthday:
-        if (currentBirthday !== 'None') {
-          console.log()
+        if (requestType.includes('BIRTHDAY')) {
+          console.log("REACHED BIRTHDAY")
           addContactBirthday(response.data['id'], currentBirthday)
         }
       })
-
   }
+
+  function googleLoginTest(){
+    axios.get(`/api/users/test`)
+  }
+
+    
 
 
 
   useEffect(() => {
+    let wantsList = []
     for (let i = 0; i < natLangResult.length; i++) {
       const element = natLangResult[i]
       if (element['type'] === 'PERSON') {
@@ -125,23 +155,38 @@ const Home = () => {
       if (element['type'] === 'EVENT') {
         if (element['name'] === 'birthday') {
           setCurrentEvent(element['name'])
+          requestType.push('BIRTHDAY')
+          console.log(requestType)
         }
       }
       if (element['type'] === 'DATE') {
         let day = element['metadata']['day']
         let month = element['metadata']['month']
+        let year = ''
+        if ((element['metadata']['year'])) {
+          year = element['metadata']['year']
+        }
         if (Number(element['metadata']['day']) < 10) {
           day = '0' + element['metadata']['day']
         }
         if (Number(element['metadata']['month']) < 10) {
           month = '0' + element['metadata']['month']
         }
-        setCurrentBirthday(day + '/' + month)
-        console.log(element['metadata']['day'] + '/' + element['metadata']['month'])
+        if (year === '') {
+          setCurrentBirthday(day + '/' + month)
+        } else {
+          setCurrentBirthday(day + '/' + month + '/' + year)
+        }
+
+        console.log(day + '/' + month + '/' + year)
       }
-      if ((element['type'] === 'CONSUMER_GOOD') || (element['type'] === 'WORK_OF_ART')) {
-        setCurrentWant(element['name'])
+      if ((element['type'] === 'CONSUMER_GOOD') || (element['type'] === 'WORK_OF_ART') || (element['type'] === 'OTHER')) {
+        // setCurrentWant(element['name'])
+        wantsList.push(element['name'])
       }
+    }
+    if (wantsList.length > 0) {
+      setCurrentWant(wantsList)
     }
   }, [natLangResult])
 
@@ -164,8 +209,13 @@ const Home = () => {
     console.log(searchVal.split(' '))
     for (let index = 0; index < searchVal.split(' ').length; index++) {
       const element = searchVal.split(' ')[index]
+      if ((birthKeyWords.includes(element))) {
+        setCurrentEvent('Birthday')
+        requestType.push('BIRTHDAY')
+      }
       if ((element === 'wants') || (element === 'needs')) {
         setCurrentEvent('Wants')
+        requestType.push('WANT')
       }
       if ((element === 'need') || (element === 'have')) {
         setCurrentEvent('Task')
@@ -205,10 +255,17 @@ const Home = () => {
           <button onClick={(e) => {
             if (currentContact.toLowerCase() !== 'none') {
               getContactName(currentContact.toLowerCase())
+
             }
           }
           }>Click test</button>
         </div>
+
+        <button onClick={() => {
+          googleLoginTest()
+        }}>
+          <h1> Run my python Calendar script</h1>
+        </button>
 
       </div>
     </div>
