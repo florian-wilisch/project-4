@@ -7,7 +7,8 @@ var $ = require("jquery");
 
 let contactFound = false
 let requestType = []
-
+let wantsList = []
+let strTest = ''
 
 const Home = () => {
   const [searchVal, getSearchVal] = useState('')
@@ -19,6 +20,9 @@ const Home = () => {
   const [currentWant, setCurrentWant] = useState('None')
   const [wantList, setWantList] = useState([])
   const [contactList, setContactList] = useState([])
+  const [birthdayDay, setBirthdayDay] = useState('')
+  const [birthdayMonth, setBirthdayMonth] = useState('')
+  const [formattedWantList, setFormattedWantList] = useState('')
   // const [requestType, setRequestType] = useState([])
 
   // const [contactFound, setContactFound] = useState(false)
@@ -36,6 +40,18 @@ const Home = () => {
     })
   }
 
+  function formatWants(list){
+
+    console.log('NAME:', list)
+    for (let i = 0; i < list.length; i++ ){
+      // setFormattedWantList(formattedWantList + `\n\u2022${list[i]}`)
+      strTest = strTest + `\n\u2022${list[i]}`
+    }
+    console.log('Formatted List:', strTest)
+    setFormattedWantList(strTest)
+    // console.log('WANT LIST:', formattedWantList)
+
+  }
 
 
   useEffect(() => {
@@ -68,10 +84,11 @@ const Home = () => {
         // console.log('NATLANG result', name)
         if (contactList[i]['name'] === name) {
           setWantList(contactList[i]['wants'])
+          formatWants(contactList[i]['wants'])
           console.log('wantlist:', wantList)
           contactFound = true
           console.log('FOUND')
-          console.log(contactList[i])
+          console.log('TEST GEER', contactList[i])
           if (requestType.includes('WANT')) {
             addContactWant(contactList[i]['id'], currentWant)
           }
@@ -84,7 +101,6 @@ const Home = () => {
         // console.log("RETURN THE BETTER FUNCT")
         addNewContact(name, currentWant)
       }
-
     }, 1000)
   }
 
@@ -103,8 +119,8 @@ const Home = () => {
         })
         console.log(`Added ${want} to ${resp.data['name']}'s want list`)
       })
-
   }
+
   function addContactBirthday(id, birthday) {
     axios.get(`/api/users/1/contacts/${id}`)
       .then(resp => {
@@ -137,16 +153,35 @@ const Home = () => {
       })
   }
 
-  function googleLoginTest(){
-    axios.get(`/api/users/test`)
+  function googleLoginTest() {
+    axios.post(`/api/users/test`, {
+      'summary': `${currentContact}'s birthday!`,
+      'description': `${currentContact}'s Wishlist: ${strTest}`,
+      'start': {
+        'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
+        'timeZone': 'Europe/Zurich'
+      },
+      'end': {
+        'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
+        'timeZone': 'Europe/Zurich'
+      },
+      'reminders': {
+        'useDefault': false,
+        'overrides': [
+          {'method': 'email', 'minutes': 40320 },
+          {'method': 'popup', 'minutes': 40320 }
+        ]
+      }
+      
+    })
   }
 
-    
+
 
 
 
   useEffect(() => {
-    let wantsList = []
+
     for (let i = 0; i < natLangResult.length; i++) {
       const element = natLangResult[i]
       if (element['type'] === 'PERSON') {
@@ -174,6 +209,8 @@ const Home = () => {
         }
         if (year === '') {
           setCurrentBirthday(day + '/' + month)
+          setBirthdayDay(day)
+          setBirthdayMonth(month)
         } else {
           setCurrentBirthday(day + '/' + month + '/' + year)
         }
@@ -226,9 +263,6 @@ const Home = () => {
   return <section className='hero is-fullheight-with-navbar'>
     <div className="hero-body is-align-items-center has-text-centered">
       <div className="container has-text-centered">
-
-
-
         <span style={{ position: 'relative' }}>
           <Vocal
             onStart={_onVocalStart}
