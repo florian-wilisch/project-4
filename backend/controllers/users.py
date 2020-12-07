@@ -59,12 +59,14 @@ def get_single_pop_user(id):
 
 #! PYTHON TEST ZONE
 
-@router.route('/users/test', methods=['GET'])
+@router.route('/users/test', methods=['POST'])
 def test_python():
   #Logs in the user with googleAuth2.0 and checks if they have upcoming events 
   #check the backend console for result
   #Currently being called from homepage button
-  main()
+  event_request = request.get_json()
+  print(event_request)
+  main(event_request)
   return 'WORKS' , 200
 
 #! Scopes:

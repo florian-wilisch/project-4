@@ -7,10 +7,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
-def main():
+
+def main(event_request):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -43,6 +44,12 @@ def main():
     events_result = service.events().list(calendarId='primary', timeMin=now,
                                         maxResults=10, singleEvents=True,
                                         orderBy='startTime').execute()
+
+
+
+    event_request = service.events().insert(calendarId='primary', body=event_request).execute()
+
+    # add_event = service.events().insert(calendarId='primary', )
     events = events_result.get('items', [])
     # events.insert()
     if not events:
