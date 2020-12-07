@@ -3,7 +3,7 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-regular-svg-icons'
 
-
+let refreshPage = false
 
 function capitalizeFirstLetter(name) {
   // console.log(name)
@@ -17,10 +17,27 @@ const FriendCard = (props) => {
   //   console.log('wants:', props.elem.wants)
   // }
   const [isActive, setisActive] = useState(false)
+  const token = localStorage.getItem('token')
+
 
   function handleContactEdit() {
     console.log('clicked')
     return <p>hello world</p>
+  }
+
+
+  function handleContactDelete() {
+    console.log('triggered')
+    refreshPage = !refreshPage
+    console.log(refreshPage)
+    // console.log(id)
+    // axios.delete(`/api/contacts/${id}`, {
+    //   headers: { Authorization: `Bearer ${token}` }
+    // })
+    //   .then(() => {      
+    //     console.log(props)
+    //     props.history.push('/account')
+    //   })
   }
 
 
@@ -34,16 +51,13 @@ const FriendCard = (props) => {
           {props.elem.birthday && `Birthday: ${props.elem.birthday}`}  
           {/* <br /> */}
         </p>
-        {(props.elem.wants && (props.elem.wants.length !== 0 )) && <div>
-          Wishes/Likes:
-          <ul>
-            {props.elem.wants.map((elem, index) => <li key={index}>
-              <div className="level-item">
-                  • {capitalizeFirstLetter(elem)}
-              </div>
-            </li>)}
-          </ul>
-        </div>}
+        {(props.elem.wants && (props.elem.wants.length !== 0 )) &&
+          <p>Wishes/Likes:</p>}
+        <ul>
+          {props.elem.wants.map((elem, index) => <li key={index}>           
+            • {capitalizeFirstLetter(elem)}            
+          </li>)}
+        </ul>      
       </div>
     </div>
 
@@ -58,7 +72,9 @@ const FriendCard = (props) => {
             <div className="dropdown-item">
               <p>Edit</p>
             </div>
-            <div className="dropdown-item">
+            <div className="dropdown-item" onClick={() => {
+              handleContactDelete(props.elem.id)
+            }}>
               <p>Delete</p>
             </div>
           </div>
@@ -72,10 +88,11 @@ const FriendCard = (props) => {
 const Account = () => {
   const [userData, setUserData] = useState([])
   const [userContacts, setUserContacts] = useState([])
-
+  const [reloadPage, setReloadPage] = useState(false)
 
   const userId = localStorage.getItem('user_id')
 
+  console.log('running')
 
   useEffect(() => {
     axios.get(`api/users/${userId}`)
@@ -91,9 +108,9 @@ const Account = () => {
       })
   }, [])
 
-
-
-
+  useEffect(() => {
+    setReloadPage(!reloadPage)
+  }, [refreshPage])
 
 
   if (userData === []) {

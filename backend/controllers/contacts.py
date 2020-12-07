@@ -22,10 +22,6 @@ def contact_create(user_id):
   return contact_schema.jsonify(contact)
 
 
-## Get single contact
-## do we need this?
-
-
 
 ## * Update contact
 @router.route('/users/<int:user_id>/contacts/<int:contact_id>', methods=['PUT'])
@@ -49,6 +45,7 @@ def update_contact(user_id, contact_id):
 
   return contact_schema.jsonify(contact), 201
 
+
 @router.route('/users/<int:user_id>/contacts', methods=['GET'])
 def get_all_contacts(user_id):
   contact_list = []
@@ -56,6 +53,7 @@ def get_all_contacts(user_id):
     if contact.user_id == user_id:
       contact_list.append(contact)
   return contact_schema.jsonify(contact_list, many=True), 200
+
 
 @router.route('/users/<int:user_id>/contacts/<int:contact_id>', methods=['GET'])
 def get_single_contact(user_id, contact_id):
@@ -65,6 +63,17 @@ def get_single_contact(user_id, contact_id):
     return { 'message': 'contact does not exist' }, 404
   return contact_schema.jsonify(contact)
 
+
+@router.route('/contacts/<int:contact_id>', methods=['DELETE'])
+# @secure_route
+def delete_single_contact(contact_id):
+  contact = Contact.query.get(contact_id)
+
+  # if contact.user != g.current_user:
+  #   return { 'message': 'Unauthorized' }, 401
+    
+  contact.remove()
+  return { 'message': f'Contact with id#{contact_id} was deleted successfully' }
 
 
 
