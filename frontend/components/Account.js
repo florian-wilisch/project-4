@@ -51,7 +51,7 @@ const FriendCard = (props) => {
       <div className={`dropdown is-right is-hoverable ${isActive ? 'is-active' : ''}`}>
         <div className="dropdown-trigger">
           {/* <button className="delete" onClick={() => setisActive(!isActive)}aria-haspopup="true" aria-controls="dropdown-menu6"></button> */}
-          <FontAwesomeIcon className='FAicon mr-1' icon={faEdit} pull="right" size='1x' onClick={() => setisActive(!isActive)}/>
+          <FontAwesomeIcon className='FAicon mt-1' icon={faEdit} pull="right" size='1x' onClick={() => setisActive(!isActive)}/>
         </div>
         <div className="dropdown-menu" id="dropdown-menu6" role="menu">
           <div className="dropdown-content">
