@@ -36,7 +36,7 @@ with app.app_context():
     name='george',
     birthday='02/03/2001',
     user=adam,
-    wants = []
+    wants = ['computer', 'bike']
   )
   
   friend2 = Contact(

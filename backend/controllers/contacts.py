@@ -68,7 +68,6 @@ def get_single_contact(user_id, contact_id):
 
 
 
-
 # @router.route('/users/<int:user_id>/contacts/<int:contact_id>/wants', methods=['POST'])
 # def add_wishlist(user_id, contact_id):
 #   contact_wants = Contact.query.get(contact_id).wants

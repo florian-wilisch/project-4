@@ -20,7 +20,6 @@ app.register_blueprint(contacts.router, url_prefix='/api')
 app.register_blueprint(users.router, url_prefix='/api')
 
 
-
 # # ! Hello world flask app to start you off.
 # @app.route('/')
 # def index():
