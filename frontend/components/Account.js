@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-regular-svg-icons'
 
 
+let refreshPage = false
+
+
 
 function capitalizeFirstLetter(name) {
   // console.log(name)
@@ -17,11 +20,13 @@ const FriendCard = (props) => {
   //   console.log('wants:', props.elem.wants)
   // }
   const [isActive, setisActive] = useState(false)
+  
 
   function handleContactEdit() {
     console.log('clicked')
     return <p>hello world</p>
   }
+
 
 
 
@@ -45,6 +50,10 @@ const FriendCard = (props) => {
           </ul>
         </div>}
       </div>
+      <button onClick={()=>{
+        refreshPage = !refreshPage
+        console.log(refreshPage)
+      }}></button>
     </div>
 
     <div className='media-right '>
@@ -72,7 +81,9 @@ const FriendCard = (props) => {
 const Account = () => {
   const [userData, setUserData] = useState([])
   const [userContacts, setUserContacts] = useState([])
+  const [reloadPage, setReloadPage] = useState(false)
 
+  
 
   const userId = localStorage.getItem('user_id')
 
@@ -92,9 +103,16 @@ const Account = () => {
   }, [])
 
 
+  console.log('rerun')
+
+  useEffect(()=>{
 
 
+  },[refreshPage])
 
+  if (refreshPage){
+    console.log('mark')
+  }
 
   if (userData === []) {
     return <div className='section'>
@@ -113,6 +131,12 @@ const Account = () => {
     <div>
       {userContacts.map((elem, index) => <FriendCard elem={elem} key={index}></FriendCard>)}
     </div>
+    <button onClick={(e) =>{
+      refreshPage = !refreshPage
+      console.log(refreshPage, reloadPage)
+      setReloadPage(refreshPage)
+
+      }}>Hello reload</button>
   </section>
 
 }
