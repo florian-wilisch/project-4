@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import regeneratorRuntime from "regenerator-runtime";
+import regeneratorRuntime from "regenerator-runtime"
 import Vocal from '@untemps/react-vocal'
-import { Link } from 'react-router-dom';
-var $ = require("jquery");
+import { Link } from 'react-router-dom'
+var $ = require("jquery")
 
 let contactFound = false
 let requestType = []
@@ -105,7 +105,7 @@ const Home = () => {
   }
 
   function addContactWant(id, want) {
-    axios.get(`/api/users/1/contacts/${id}`)
+    axios.get(`/api/contacts/${id}`)
       .then(resp => {
         const currentWant = resp.data['wants']
         for (let i = 0; i < want.length; i++)
@@ -122,7 +122,7 @@ const Home = () => {
   }
 
   function addContactBirthday(id, birthday) {
-    axios.get(`/api/users/1/contacts/${id}`)
+    axios.get(`/api/contacts/${id}`)
       .then(resp => {
         axios.put(`/api/users/1/contacts/${id}`, {
           'name': resp.data['name'],

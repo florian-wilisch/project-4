@@ -55,8 +55,8 @@ def get_all_contacts(user_id):
   return contact_schema.jsonify(contact_list, many=True), 200
 
 
-@router.route('/users/<int:user_id>/contacts/<int:contact_id>', methods=['GET'])
-def get_single_contact(user_id, contact_id):
+@router.route('/contacts/<int:contact_id>', methods=['GET'])
+def get_single_contact(contact_id):
   contact = Contact.query.get(contact_id)
   print(contact)
   if not contact:
