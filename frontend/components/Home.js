@@ -219,6 +219,7 @@ const Home = () => {
       }
       if ((element['type'] === 'CONSUMER_GOOD') || (element['type'] === 'WORK_OF_ART') || (element['type'] === 'OTHER')) {
         // setCurrentWant(element['name'])
+        console.log(element['name'])
         wantsList.push(element['name'])
       }
     }
