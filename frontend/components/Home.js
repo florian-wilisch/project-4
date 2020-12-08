@@ -4,6 +4,8 @@ import regeneratorRuntime from "regenerator-runtime"
 import Vocal from '@untemps/react-vocal'
 import { Link } from 'react-router-dom'
 var $ = require("jquery")
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
 
 let contactFound = false
 let requestType = []
@@ -306,18 +308,18 @@ const Home = () => {
 
 
         {/* </button> */}
-        <Vocal
+          <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
-            style={{ width: 100, height: 100, position: 'absolute', left: '17%', top: '17%' }}
-            
-          >
-            <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{position: 'relative', marginTop: '25%'}}>
+            className='pulse-button'
+          >  
+            <button id="speech" className="btn pulse-button" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '25%' }}>
 {/* <svg data-testid="__icon-root__" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24">
 <path data-testid="__icon-path__" fill="black" d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path>
 </svg> */}
-          {recording ? (<div className="pulse-ring"></div>): ''}
-          
+              <FontAwesomeIcon className='icon' icon={faMicrophone} color='#2a363b' size='1x' />
+              {recording ? (<div className="pulse-ring"></div>) : ''}        
+              
             </button>
           </Vocal>
 
@@ -326,18 +328,17 @@ const Home = () => {
           {/* <input defaultValue={result} style={{ width: 300, height: 40 }} /> */}
           {/* </span> */}
 
-
           <form onSubmit={(e) => {
             e.preventDefault()
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
           }}>
-            <input placeholder="Input Request" defaultValue={result} style={{ width: 300, height: 40 }} onChange={(e) => {
+            <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
               getSearchVal(e.target.value.toLocaleLowerCase())
               setResult(e.target.value.toLocaleLowerCase())
             }}></input>
-            <button style={{ height: 40 }}>Submit</button>
+            <button className='button'>Submit</button>
           </form>
           <div>
             <h1>Contact: {currentContact}</h1>
