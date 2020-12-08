@@ -44,23 +44,23 @@ $navbar-breakpoint: 500px;
   }
 }
 
-li {
-  display: flex;
-  align-items: center;
-  .FAicon {
-    position: absolute;
-    right: 30px;
-    color: gray;
-    opacity: 0.7;
-    // justify-self: flex-end;
-  }
-  .delete {
+// li {
+//   display: flex;
+//   align-items: center;
+//   .FAicon {
+//     position: absolute;
+//     right: 30px;
+//     color: gray;
+//     opacity: 0.7;
+//     // justify-self: flex-end;
+//   }
+//   .delete {
 
-    position: absolute;
-    right: 10px;
+//     position: absolute;
+//     right: 10px;
     
-  }
-}
+//   }
+// }
 
 
 // Update some of Bulma's component variables

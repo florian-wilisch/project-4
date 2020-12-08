@@ -55,7 +55,7 @@ const FriendCard = (props) => {
           <p>Wishes/Likes:</p>}
         <ul>
           {props.elem.wants.map((elem, index) => <li key={index}>           
-            • {capitalizeFirstLetter(elem)}            
+            {capitalizeFirstLetter(elem)}            
           </li>)}
         </ul>      
       </div>
