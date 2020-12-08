@@ -4,8 +4,10 @@ import axios from 'axios'
 const EditContact = (props) => {
 
   const contactId = props.match.params.contactId
-  const [contactData, setContactData] = useState([])
-  const [wants, setWants] = useState([])
+  const [contactData, setContactData] = useState({
+    wants: []
+  })
+  // const [wants, setWants] = useState([])
 
   useEffect(() => {
     console.log(contactId)
@@ -13,7 +15,7 @@ const EditContact = (props) => {
       .then(resp => {
         console.log(resp.data)
         setContactData(resp.data)
-        setWants(resp.data.wants)
+        // setWants(resp.data.wants)
       })
   }, [])
 
@@ -33,13 +35,44 @@ const EditContact = (props) => {
     console.log(data)
     setContactData(data)
   }
-  
-  
-  function handleSubmit() {
 
+
+  function handleWantsChange(event, i) { 
+  // * copy wants into locale variable
+  // * mutate wants[0] to new value
+  // * save wants back into state
+    const data = {
+      ...contactData
+    }
+    data.wants[i] = event.target.value
+    setContactData(data)    
   }
 
-  console.log( typeof wants)
+
+
+  function emptyString(field) {
+    if (field.startsWith('wants[')) {
+      const i = field.charAt(6)
+      const data = {
+        ...contactData
+      }
+      console.log(contactData.field)      
+      data.wants.splice(i, 1)
+      return setContactData(data)
+    }  else { 
+      const data = {
+        ...contactData,
+        [field]: ''
+      }
+      setContactData(data)
+    }
+  }
+  
+  console.log(contactData)
+
+  function handleSubmit() {    
+  }
+
 
   return <section className='section my-6'>
     <h1 className='title'>Edit</h1>
@@ -47,152 +80,41 @@ const EditContact = (props) => {
       <form className='' onSubmit={handleSubmit}>
         <div className='field '>
           <label className='label'>Name</label>
-          <div className="control">
+          <div className="control has-icons-right">
             <input
               className='input'
               type="text"
               onChange={handleChange}
               value={contactData['name'] && capitalizeFirstLetter(contactData['name'])}
               name='name'
-            />
+            /><span 
+              className='icon is-right'>
+              <i className='delete' onClick={() => {emptyString('name')}}></i>
+            </span>
           </div>
         </div>
-        {(wants !== []) && <label className='label'>Wishes/Likes</label>}
-        {wants.map((w, i) => {
+        {(contactData.wants !== []) && <label className='label'>Wishes/Likes</label>}
+        {contactData.wants.map((w, i) => {
           return <div key={i} className='field '>
             
-            <div className="control">
+            <div className="control has-icons-right">
               <input
                 className='input'
                 type="text"
-                onChange={handleChange}
-                value={contactData['wants'][i]}
-                name={`want ${i}`}
-              />
+                onChange={(event) => {handleWantsChange(event, i)}}
+                // defaultValue={contactData.wants[i]}
+                value={contactData.wants[i]}
+                name={contactData.wants[i]}
+              /><span 
+                className='icon is-right'>
+                <i className='delete' onClick={() => {emptyString(`wants[${i}]`)}}></i>
+              </span>
             </div>
           </div>
         })}
 
+// * add another one
 
-
-
-
-
-
-    {/* <div className="field">
-      <label className='label' onClick={() => setIsVisible(!isVisible)}>Category*</label>
-    </div> */}
-
-    {/* <div className="is-multiple control">
-      <Select
-        closeMenuOnSelect={false}
-        value={selectedCategories}
-        onChange={setSelectedCategories}
-        components={makeAnimated()}
-        options={options}
-        isMulti
-        autoFocus
-        isSearchable
-        placeholder="Select the category available"
-        className="basic-multi-select"
-
-      />
-    </div> */}
-
-    {/* <div className='field mt-3'>
-      <label className='label'>Address*</label>
-      <div className="control">
-        <input
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['address']}
-          name='address'
-          placeholder='Street and Number'
-        />
-      </div>
-      <div className="control mt-1">
-        <input
-          label='postcode'
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['postcode']}
-          name='postcode'
-          placeholder='Postcode'
-        />
-      </div>
-      <div className="control mt-1">
-        <input
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['city']}
-          name='city'
-          placeholder='City'
-        />
-      </div>
-    </div>
-
-    <div className='field'>
-      <label className='label'>Phone</label>
-      <div className="control">
-        <input
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['phone']}
-          name='phone'
-        />
-      </div>
-    </div>
-
-    <div className='field'>
-      <label className='label'>Email</label>
-      <div className="control">
-        <input
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['email']}
-          name='email'
-        />
-      </div>
-    </div>
-
-    <div className='field'>
-      <label className='label'>Website</label>
-      <div className="control">
-        <input
-          className='input'
-          type="text"
-          onChange={handleChange}
-          value={formData['website']}
-          name='website'
-        />
-      </div>
-    </div>
-    <div className='field'>
-      <label className='label'>Photo</label>
-      <div className="control">
-        <UploadImage
-          updateImage={updateImage}
-        />
-
-      </div>
-    </div>
-    <div className='field'>
-      <label className='label'>Description</label>
-      <div className="control">
-        <textarea
-          className='textarea'
-          type="text"
-          onChange={handleChange}
-          value={formData['bio']}
-          name='bio'
-        />
-      </div>
-    </div> */}
 
     <button type='submit' className='button is-link'>Submit</button>
   </form>
