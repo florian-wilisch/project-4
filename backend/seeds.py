@@ -10,13 +10,15 @@ with app.app_context():
   adam = User(
     username='adam',
     email='adam@gmail.com',
-    password='pass'
+    password='pass',
+    google_Auth_Token='Unregistered'
   )
 
   florian = User(
     username='florian',
     email='florian@gmail.com',
-    password='pass'
+    password='pass',
+    google_Auth_Token='Unregistered'
   )
 
   adam.save()

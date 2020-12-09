@@ -11,6 +11,7 @@ class User(db.Model, BaseModel):
   username = db.Column(db.String(15), nullable=False, unique=True)
   email = db.Column(db.String(128), nullable=False, unique=True)
   password_hash = db.Column(db.String(128), nullable=True)
+  google_Auth_Token = db.Column(db.String(900), nullable=False)
 
   @hybrid_property
   def password(self):
