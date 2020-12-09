@@ -6,7 +6,7 @@ from serializers.user_populate import UserPopSchema
 from serializers.contact import ContactSchema
 # from serializers.want import WantSchema
 from marshmallow import ValidationError
-from quickstart import main
+# from quickstart import main
 
 user_schema = UserSchema()
 user_pop_schema = UserPopSchema()
@@ -68,6 +68,11 @@ def test_python():
   print(event_request)
   main(event_request)
   return 'WORKS' , 200
+
+
+
+
+
 
 #! Scopes:
 #! use readonly to check if event has been added to calendar. if not change the readonly to readwrite, and add event

@@ -14,10 +14,11 @@ ma = Marshmallow(app)
 
 bcrypt = Bcrypt(app)
 
-from controllers import users, contacts
+from controllers import users, contacts, goog_auth
 
 app.register_blueprint(contacts.router, url_prefix='/api')
 app.register_blueprint(users.router, url_prefix='/api')
+app.register_blueprint(goog_auth.router, url_prefix='/api')
 
 
 # # ! Hello world flask app to start you off.

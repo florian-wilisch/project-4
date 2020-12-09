@@ -24,6 +24,7 @@ const Home = () => {
   const [birthdayMonth, setBirthdayMonth] = useState('')
   const [formattedWantList, setFormattedWantList] = useState('')
   const [recording, setRecording] = useState(false)
+  const [micColor, setMicColor] = useState('white')
   // const [requestType, setRequestType] = useState([])
 
   // const [contactFound, setContactFound] = useState(false)
@@ -249,6 +250,8 @@ const Home = () => {
     setBirthdayDay('')
     setBirthdayMonth('')
     setFormattedWantList('')
+    setRecording(false)
+
   }
 
 
@@ -256,12 +259,14 @@ const Home = () => {
   const [result, setResult] = useState('')
 
   const _onVocalStart = () => {
+    setMicColor('black')
     resetAllValues()
     setRecording(true)
     setResult('')
   }
 
   const _onVocalResult = (result) => {
+    setMicColor('white')
     setRecording(false)
     getSearchVal(result.toLocaleLowerCase())
     console.log('RESULTS', result)
@@ -300,26 +305,32 @@ const Home = () => {
 
 
         <div className="container has-text-centered" >
-        {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
+          {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
 
           {/* <i className="fa fa-microphone" aria-hidden="true"></i> */}
 
 
-        {/* </button> */}
-        <Vocal
+          {/* </button> */}
+
+          <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
+            onEnd={() =>{
+              console.log('recoding stopped')
+              setRecording(false)}}
             style={{ width: 100, height: 100, position: 'absolute', left: '17%', top: '17%' }}
-            
           >
-            <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{position: 'relative', marginTop: '25%'}}>
-{/* <svg data-testid="__icon-root__" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24">
-<path data-testid="__icon-path__" fill="black" d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path>
-</svg> */}
-          {recording ? (<div className="pulse-ring"></div>): ''}
-          
+            <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '20%', zIndex: '0', marginBottom: '15px' }}>
+              <svg data-testid="__icon-root__" xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 24 24" style={{ position: 'absolute', left: '25%',top: '25%', zIndex: '1' }}>
+                <path data-testid="__icon-path__" fill={micColor} d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path>
+              </svg>
+
+              {recording ? (<div className="pulse-ring"></div>) : ''}
+
             </button>
+
           </Vocal>
+
 
           {/* <span style={{ position: 'relative' }}> */}
 
@@ -362,6 +373,7 @@ const Home = () => {
             resetAllValues()
           }
           }>Reset all</button>
+          <button onClick={(e)=>{}}>Stop recording</button>
 
         </div>
       </div>
