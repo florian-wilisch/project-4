@@ -20,7 +20,7 @@ $dark: #2a363b;
 $family-sans-serif: "Nunito", sans-serif;
 $grey-dark: $dark;
 $grey-light: $beige-light;
-$primary: $purple;
+$primary: $red;
 $success: $green;
 // $secondary: $green;
 $link: $pink;
@@ -44,24 +44,6 @@ $navbar-breakpoint: 500px;
   }
 }
 
-// li {
-//   display: flex;
-//   align-items: center;
-//   .FAicon {
-//     position: absolute;
-//     right: 30px;
-//     color: gray;
-//     opacity: 0.7;
-//     // justify-self: flex-end;
-//   }
-//   .delete {
-
-//     position: absolute;
-//     right: 10px;
-    
-//   }
-// }
-
 
 // Update some of Bulma's component variables
 $body-background-color: $beige;
@@ -76,7 +58,7 @@ $input-shadow: none;
 @import "../../node_modules/bulma/bulma.sass";
 
 
-$primary: #FF3D7F;
+$primary:#e84a5f;
 $size: 150px;
 
 .bodyMic {

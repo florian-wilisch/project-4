@@ -24,9 +24,9 @@ def contact_create(user_id):
 
 
 ## * Update contact
-@router.route('/users/<int:user_id>/contacts/<int:contact_id>', methods=['PUT'])
+@router.route('/contacts/<int:contact_id>', methods=['PUT'])
 # @secure_route
-def update_contact(user_id, contact_id):
+def update_contact(contact_id):
   existing_contact = Contact.query.get(contact_id)
   print(request.get_json())
   try:

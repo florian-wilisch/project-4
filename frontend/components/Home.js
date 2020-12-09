@@ -4,6 +4,8 @@ import regeneratorRuntime from "regenerator-runtime"
 import Vocal from '@untemps/react-vocal'
 import { Link } from 'react-router-dom'
 var $ = require("jquery")
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
 
 let contactFound = false
 let requestType = []
@@ -327,9 +329,21 @@ const Home = () => {
 
               {recording ? (<div className="pulse-ring"></div>) : ''}
 
+        </button>
+        </Vocal>
+          {/* <Vocal
+            onStart={_onVocalStart}
+            onResult={_onVocalResult}
+            className='pulse-button'
+          >  
+            <button id="speech" className="btn pulse-button" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '25%' }}>
+
+              <FontAwesomeIcon className='icon' icon={faMicrophone} color='#2a363b' size='1x' />
+              {recording ? (<div className="pulse-ring"></div>) : ''}        
+              
             </button>
 
-          </Vocal>
+          </Vocal> */}
 
 
           {/* <span style={{ position: 'relative' }}> */}
@@ -337,18 +351,17 @@ const Home = () => {
           {/* <input defaultValue={result} style={{ width: 300, height: 40 }} /> */}
           {/* </span> */}
 
-
           <form onSubmit={(e) => {
             e.preventDefault()
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
           }}>
-            <input placeholder="Input Request" defaultValue={result} style={{ width: 300, height: 40 }} onChange={(e) => {
+            <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
               getSearchVal(e.target.value.toLocaleLowerCase())
               setResult(e.target.value.toLocaleLowerCase())
             }}></input>
-            <button style={{ height: 40 }}>Submit</button>
+            <button className='button'>Submit</button>
           </form>
           <div>
             <h1>Contact: {currentContact}</h1>

@@ -65,7 +65,7 @@ const Account = () => {
     </div>
   }
 
-  return <section className='section mt-6'>
+  return <section className='section mt-6 mx-2'>
     <h1 className='title'>Contacts</h1>
     <div>
       {userContacts.map((elem, index) => {      
@@ -92,7 +92,7 @@ const Account = () => {
             <div className={`dropdown is-right is-hoverable ${(isActive && (activeIndex === index)) ? 'is-active' : ''}`}>
               <div className="dropdown-trigger">
                 {/* <button className="delete" onClick={() => setisActive(!isActive)}aria-haspopup="true" aria-controls="dropdown-menu6"></button> */}
-                <FontAwesomeIcon className='FAicon mt-1' icon={faEdit} pull="right" size='1x' onClick={() => {
+                <FontAwesomeIcon className='has-text-grey mt-1' icon={faEdit} pull="right" size='1x' onClick={() => {
                   activeIndex = index
                   setisActive(!isActive)
                 }} />
