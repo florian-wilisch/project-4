@@ -37,7 +37,7 @@ const NavBar = (props) => {
         <Link to="/" className="navbar-item" onClick={() => setisActive(!isActive)}>
           <strong>Home</strong>
         </Link>
-        <Link to="/account" className="navbar-item" onClick={() => setisActive(!isActive)}>Account</Link>
+        {localStorage.getItem('token') &&<Link to="/account" className="navbar-item" onClick={() => setisActive(!isActive)}>Account</Link>}
         {/* <Link to="/map" className="navbar-item">Map</Link> */}
       </div>
       <div className="navbar-end">

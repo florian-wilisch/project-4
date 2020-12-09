@@ -7,6 +7,7 @@ from serializers.contact import ContactSchema
 # from serializers.want import WantSchema
 from marshmallow import ValidationError
 # from quickstart import main
+from middleware.secure_route import secure_route
 
 user_schema = UserSchema()
 user_pop_schema = UserPopSchema()
@@ -28,9 +29,9 @@ def login():
   user = User.query.filter_by(email=data['email']).first()
   print(user)
   if not user:
-    return { 'message': 'No user found with this email'}, 200
+    return { 'message': 'No user found with this email'}, 404
   if not user.validate_password(data['password']):
-    return {'message': ' Unauthorized'}, 402
+    return {'message': ' Unauthorized'}, 401
   token = user.generate_token()
   user_name = user.username
   user_id = user.id
@@ -38,7 +39,7 @@ def login():
 
 ## * Get USER
 @router.route('/users-only/<int:id>', methods=['GET'])
-# @secure_route
+@secure_route
 def get_single_user(id):
   user = User.query.get(id)
   if not user:
@@ -48,7 +49,7 @@ def get_single_user(id):
 
 ## * Get Populated USER
 @router.route('/users/<int:id>', methods=['GET'])
-# @secure_route
+@secure_route
 def get_single_pop_user(id):
   user = User.query.get(id)
   if not user:

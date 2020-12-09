@@ -3,15 +3,24 @@ import axios from 'axios'
 
 const EditContact = (props) => {
 
+  const token = localStorage.getItem('token')
   const contactId = props.match.params.contactId
   const [contactData, setContactData] = useState({
     wants: []
   })
   // const [wants, setWants] = useState([])
 
+  if (!token) {
+    return window.location.replace('/login')
+
+  }
+
+
   useEffect(() => {
     console.log(contactId)
-    axios.get(`/api/contacts/${contactId}`)
+    axios.get(`/api/contacts/${contactId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(resp => {
         console.log(resp.data)
         setContactData(resp.data)
@@ -124,6 +133,9 @@ const EditContact = (props) => {
         props.history.push('/account')        
       })
   }
+
+
+
 
 
   return <section className='section mt-6 mb-3'>

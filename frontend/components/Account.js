@@ -26,8 +26,14 @@ const Account = () => {
 
   console.log('running')
 
+  if (!token) {
+    return window.location.replace('/login')
+  }
+
   useEffect(() => {
-    axios.get(`api/users/${userId}`)
+    axios.get(`api/users/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(resp => {
         console.log(resp.data)
         setUserData(resp.data)
