@@ -42,8 +42,8 @@ def index():
   return print_index_table()
 
 
-@router.route('/test/<int:id>', methods=['GET','POST'])
-def test_api_request(id):
+@router.route('/calendar_actions/<int:id>', methods=['GET','POST'])
+def handle_google_calendar(id):
   event_request = request.get_json()
   print("EVENT RESULT HERE:", event_request)
 
@@ -99,7 +99,7 @@ def test_api_request(id):
   return "Success", 200
 
 
-@router.route('/test/authorize')
+@router.route('/calendar_actions/authorize')
 def authorize():
   id = flask.session['userID']
   print('start flow')
@@ -110,10 +110,7 @@ def authorize():
 
   print(f'Current User ID: {id}')
 
-  # The URI created here must exactly match one of the authorized redirect URIs
-  # for the OAuth 2.0 client, which you configured in the API Console. If this
-  # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
-  # error.
+
   flow.redirect_uri = flask.url_for(f'controllers.goog_auth.oauth2callback',  _external=True)
   # print('start flow3')
   print('redirect:', flow.redirect_uri)
@@ -164,7 +161,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
 
-  return flask.redirect(flask.url_for('controllers.goog_auth.test_api_request', id= flask.session['userID']))
+  return flask.redirect(flask.url_for('controllers.goog_auth.handle_google_calendar', id= flask.session['userID']))
 
 
 @router.route('/revoke')

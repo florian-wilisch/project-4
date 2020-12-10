@@ -3,7 +3,6 @@ import axios from 'axios'
 import regeneratorRuntime from "regenerator-runtime"
 import Vocal from '@untemps/react-vocal'
 import { Link } from 'react-router-dom'
-var $ = require("jquery")
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
 import Login from './Login'
@@ -56,7 +55,12 @@ const Home = () => {
 
   }
 
-
+  function capitalizeFirstLetter(name) {
+    // console.log(name)
+    name = name[0].toUpperCase() + name.slice(1)
+    return name
+  }
+  
   useEffect(() => {
     axios.post(NatLangUrl, {
       'encodingType': 'UTF8',
@@ -185,8 +189,8 @@ const Home = () => {
   }
 
 
-  function googleLoginTest() {
-    axios.get('/api/test/2')
+  function googleLogin() {
+    axios.get(`/api/calendar_actions/${userId}`)
       .then((resp) => {
         console.log(resp.data)
         if (resp.data !== 'Success') {
@@ -200,13 +204,13 @@ const Home = () => {
   function sendToCalendar() {
     if (requestType.includes('BIRTHDAY')) {
 
-      axios.get('/api/test/2')
+      axios.get(`/api/calendar_actions/${userId}`)
         .then((resp) => {
           console.log(resp.data)
           if (resp.data === 'Success') {
 
-            axios.post(`/api/test/2`, {
-              'summary': `${currentContact}'s birthday!`,
+            axios.post(`/api/calendar_actions/2`, {
+              'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
               'description': `${currentContact}'s Wishlist: ${strTest}`,
               'start': {
                 'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
@@ -413,7 +417,7 @@ const Home = () => {
           </div>
 
           <button onClick={() => {
-            googleLoginTest()
+            googleLogin()
           }}>
             <h1>Google Login</h1>
           </button>
@@ -426,8 +430,7 @@ const Home = () => {
           <button onClick={(e) => {
             resetAllValues()
           }
-          }>Reset all</button>
-
+          }>Reset all test</button>
 
         </div>
       </div>

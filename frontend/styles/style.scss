@@ -125,3 +125,11 @@ $size: 150px;
   // justify-content: center;
 	// height: 100vh;
 }
+
+
+a:link, a:visited, a:active, a:hover {
+  color: rgb(49, 49, 49) !important;
+}
+link:any-link, link:link{
+  color: rgb(49, 49, 49) !important;
+}
