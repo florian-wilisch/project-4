@@ -55,7 +55,9 @@ def handle_google_calendar(id):
     print("<----------------------INFO END---------------------->")
     if i[0] == 'Unregistered':
       print("IT IS!!")
-      return flask.redirect(f'authorize')
+      # return flask.redirect(f'authorize')
+      return flask.redirect('https://project-4-rmbr.herokuapp.com/api/calendar_actions/authorize')
+
 
   result = db.engine.execute(f"""SELECT "google_Auth_Token" FROM users WHERE id = {id};""")
   for i in result:
