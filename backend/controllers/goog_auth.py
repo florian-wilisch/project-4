@@ -100,7 +100,7 @@ def handle_google_calendar(id):
 
 
 
-  return 'success', 200
+  return 'Successfully connected rmbr to your google calendar! You can close this tab now!', 200
 
 
 @router.route('/calendar_actions/authorize')

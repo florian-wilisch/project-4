@@ -202,6 +202,7 @@ const Home = () => {
 
 
   function sendToCalendar() {
+    console.log('WAS CALLED YAY')
     if ((requestType.includes('BIRTHDAY')) && (currentBirthday !== 'None')) {
       setTimeout(() => {
         axios.get(`/api/calendar_actions/${userId}`)
@@ -399,15 +400,16 @@ const Home = () => {
             }}></input>
             <button className='button'>Submit</button>
           </form>
-          <button className='button' onClick={(e) => {
 
-          }}>Add to calendar</button>
 
           <p className='subtitle mt-2'>{print}</p>
 
 
           <hr className="has-background-success mt-2 mx-2"></hr>
           <div className="columns is-vcentered is-mobile mb-0">
+            <button className='button' onClick={(e) => {
+              sendToCalendar()
+            }}>Add to calendar</button>
             <div className='column help'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
