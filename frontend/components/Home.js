@@ -193,7 +193,7 @@ const Home = () => {
     axios.get(`/api/calendar_actions/${userId}`)
       .then((resp) => {
         console.log(resp.data)
-        if (resp.data !== 'Success') {
+        if (resp.data[0] !== 'S') {
           window.open(resp.data)
         }
       })
@@ -207,8 +207,8 @@ const Home = () => {
       setTimeout(() => {
         axios.get(`/api/calendar_actions/${userId}`)
           .then((resp) => {
-            console.log(resp.data)
-            if (resp.data === 'Success') {
+            console.log('RESP DATA:', resp.data)
+            if (resp.data[0] === 'S') {
 
               axios.post(`/api/calendar_actions/${userId}`, {
                 'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
