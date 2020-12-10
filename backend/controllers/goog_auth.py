@@ -168,7 +168,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
 
-  return flask.redirect(flask.url_for('controllers.goog_auth.handle_google_calendar', id= flask.session['userID'], _scheme='https'))
+  return flask.redirect(flask.url_for('controllers.goog_auth.handle_google_calendar', id= flask.session['userID'], _scheme='https'),  _external=True)
 
 
 @router.route('/revoke')
