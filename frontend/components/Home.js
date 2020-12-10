@@ -60,7 +60,7 @@ const Home = () => {
     name = name[0].toUpperCase() + name.slice(1)
     return name
   }
-  
+
   useEffect(() => {
     axios.post(NatLangUrl, {
       'encodingType': 'UTF8',
@@ -118,7 +118,7 @@ const Home = () => {
 
   // console.log(currentWant)
 
-  function addContactWant(id, want) {    
+  function addContactWant(id, want) {
     console.log('API | GET: grabbing specific contact')
     axios.get(`/api/contacts/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -184,7 +184,7 @@ const Home = () => {
           addContactBirthday(response.data['id'], currentBirthday)
           // setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${currentBirthday} to their birthday info`)
         }
-        
+
       })
   }
 
@@ -202,34 +202,36 @@ const Home = () => {
 
 
   function sendToCalendar() {
-    if (requestType.includes('BIRTHDAY')) {
+    if (requestType.includes('BIRTHDAY') && (birthdayDay !== '')) {
+      setTimeout(() => {
+        axios.get(`/api/calendar_actions/${userId}`)
+          .then((resp) => {
+            console.log(resp.data)
+            if (resp.data === 'Success') {
 
-      axios.get(`/api/calendar_actions/${userId}`)
-        .then((resp) => {
-          console.log(resp.data)
-          if (resp.data === 'Success') {
+              axios.post(`/api/calendar_actions/2`, {
+                'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
+                'description': `${currentContact}'s Wishlist: ${strTest}`,
+                'start': {
+                  'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
+                  'timeZone': 'Europe/Zurich'
+                },
+                'end': {
+                  'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
+                  'timeZone': 'Europe/Zurich'
+                },
+                'reminders': {
+                  'useDefault': false,
+                  'overrides': [
+                    { 'method': 'email', 'minutes': 40320 },
+                    { 'method': 'popup', 'minutes': 40320 }
+                  ]
+                }
+              })
+            }
+          })
+      }, 600)
 
-            axios.post(`/api/calendar_actions/2`, {
-              'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
-              'description': `${currentContact}'s Wishlist: ${strTest}`,
-              'start': {
-                'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
-                'timeZone': 'Europe/Zurich'
-              },
-              'end': {
-                'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
-                'timeZone': 'Europe/Zurich'
-              },
-              'reminders': {
-                'useDefault': false,
-                'overrides': [
-                  { 'method': 'email', 'minutes': 40320 },
-                  { 'method': 'popup', 'minutes': 40320 }
-                ]
-              }
-            })
-          }
-        })
     }
   }
 
@@ -348,9 +350,9 @@ const Home = () => {
     }
   }, [updateSearch])
 
-// comment adam hello
+  // comment adam hello
 
-  
+
   return <section className='homepage'>
 
     <section className='hero is-fullheight-with-navbar' >
@@ -389,6 +391,7 @@ const Home = () => {
             if (currentContact.toLowerCase() !== 'none') {
               handleContactInfo(currentContact.toLowerCase())
             }
+            sendToCalendar()
           }}>
             <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
               getSearchVal(e.target.value.toLocaleLowerCase())
@@ -396,6 +399,9 @@ const Home = () => {
             }}></input>
             <button className='button'>Submit</button>
           </form>
+          <button className='button' onClick={(e) => {
+
+          }}>Add to calendar</button>
 
           <p className='subtitle mt-2'>{print}</p>
 
@@ -412,7 +418,7 @@ const Home = () => {
             </div>
           </div>
 
-{/* ##* TESTING STUFF *## */}
+          {/* ##* TESTING STUFF *## */}
 
           {/* <div>
             <h1>Contact: {currentContact}</h1>
