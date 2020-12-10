@@ -87,7 +87,7 @@ const Home = () => {
   }, [currentContact])
 
 
-  function getContactName(name) {
+  function handleContactInfo(name) {
     setTimeout(() => {
       console.log("CONTACT NAME:", name)
       console.log("CONTACT LIST:", contactList)
@@ -113,7 +113,7 @@ const Home = () => {
         // console.log("RETURN THE BETTER FUNCT")
         addNewContact(name, currentWant)
       }
-    }, 1000)
+    }, 500)
   }
 
   console.log(currentWant)
@@ -324,6 +324,9 @@ const Home = () => {
     console.log('RESULTS', result)
     setResult(result)
     setUpdateSearch(true)
+    if (currentContact.toLowerCase() !== 'none') {
+      handleContactInfo(currentContact.toLowerCase())
+    }
   }
   // Voice Stuff Ends //
 
@@ -344,6 +347,8 @@ const Home = () => {
       }
     }
   }, [updateSearch])
+
+// comment adam hello
 
   
   return <section className='homepage'>
@@ -374,25 +379,15 @@ const Home = () => {
 
             </button>
           </Vocal>
-          {/* <Vocal
-            onStart={_onVocalStart}
-            onResult={_onVocalResult}
-            className='pulse-button'
-          >  
-            <button id="speech" className="btn pulse-button" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '25%' }}>
-
-              <FontAwesomeIcon className='icon' icon={faMicrophone} color='#2a363b' size='1x' />
-              {recording ? (<div className="pulse-ring"></div>) : ''}        
-              
-            </button>
-          </Vocal>
-          {/* <FontAwesomeIcon className='icon' icon={faMicrophone} color='#2a363b' size='1x' /> */}
 
           <form onSubmit={(e) => {
             e.preventDefault()
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
+            if (currentContact.toLowerCase() !== 'none') {
+              handleContactInfo(currentContact.toLowerCase())
+            }
           }}>
             <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
               getSearchVal(e.target.value.toLocaleLowerCase())
@@ -403,17 +398,32 @@ const Home = () => {
 
           <p className='subtitle mt-2'>{print}</p>
 
-          <div>
+
+          <hr className="has-background-success mt-2 mx-2"></hr>
+          <div className="columns is-vcentered is-mobile mb-0">
+            <div className='column help'>Connect rmbr to your Google Calendar:</div>
+            <div className="column is-narrow">
+              <button className="button is-small is-light" onClick={() => {
+                googleLoginTest()
+              }}>
+                Connect
+              </button>
+            </div>
+          </div>
+
+{/* ##* TESTING STUFF *## */}
+
+          {/* <div>
             <h1>Contact: {currentContact}</h1>
             <h1>Request type: {currentEvent}</h1>
             <h1>birthday: {currentBirthday}</h1>
             <h1>Wants: {currentWant}</h1>
             <button onClick={(e) => {
               if (currentContact.toLowerCase() !== 'none') {
-                getContactName(currentContact.toLowerCase())
+                handleContactInfo(currentContact.toLowerCase())
               }
-            }
-            }>Click test</button>
+            }}
+            >Click test</button>
           </div>
 
           <button onClick={() => {
@@ -430,7 +440,12 @@ const Home = () => {
           <button onClick={(e) => {
             resetAllValues()
           }
+<<<<<<< HEAD
           }>Reset all test</button>
+=======
+          }>Reset all</button> */}
+
+>>>>>>> development
 
         </div>
       </div>
