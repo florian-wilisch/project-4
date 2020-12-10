@@ -116,7 +116,7 @@ const Home = () => {
     }, 500)
   }
 
-  console.log(currentWant)
+  // console.log(currentWant)
 
   function addContactWant(id, want) {    
     console.log('API | GET: grabbing specific contact')
@@ -382,6 +382,7 @@ const Home = () => {
 
           <form onSubmit={(e) => {
             e.preventDefault()
+            console.log('RESULT BAR:', result.toLocaleLowerCase())
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
@@ -404,7 +405,7 @@ const Home = () => {
             <div className='column help'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
-                googleLoginTest()
+                googleLogin()
               }}>
                 Connect
               </button>
@@ -440,12 +441,8 @@ const Home = () => {
           <button onClick={(e) => {
             resetAllValues()
           }
-<<<<<<< HEAD
-          }>Reset all test</button>
-=======
           }>Reset all</button> */}
 
->>>>>>> development
 
         </div>
       </div>
