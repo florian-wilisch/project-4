@@ -209,6 +209,7 @@ const Home = () => {
           .then((resp) => {
             console.log('RESP DATA:', resp.data)
             if (resp.data[0] === 'S') {
+              
 
               axios.post(`/api/calendar_actions/${userId}`, {
                 'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
@@ -231,7 +232,7 @@ const Home = () => {
               })
             }
           })
-      }, 600)
+      }, 2000)
 
     }
   }
