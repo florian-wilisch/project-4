@@ -101,9 +101,9 @@ def handle_google_calendar(id):
 
 @router.route('/calendar_actions/authorize')
 def authorize():
-  id = flask.session['userID']
-  print('start flow')
   
+  print('start flow')
+  id = flask.session['userID']
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
@@ -111,7 +111,7 @@ def authorize():
   print(f'Current User ID: {id}')
 
 
-  flow.redirect_uri = flask.url_for(f'controllers.goog_auth.oauth2callback',  _external=True)
+  flow.redirect_uri = flask.url_for(f'controllers.goog_auth.oauth2callback',  _external=True, _scheme='https')
   # print('start flow3')
   print('redirect:', flow.redirect_uri)
   authorization_url, state = flow.authorization_url(
@@ -145,7 +145,7 @@ def oauth2callback():
 
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
-  flow.redirect_uri = flask.url_for('controllers.goog_auth.oauth2callback', _external=True)
+  flow.redirect_uri = flask.url_for('controllers.goog_auth.oauth2callback', _external=True, _scheme='https')
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = flask.request.url
@@ -162,7 +162,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
 
-  return flask.redirect(flask.url_for('controllers.goog_auth.handle_google_calendar', id= flask.session['userID']))
+  return flask.redirect(flask.url_for('controllers.goog_auth.handle_google_calendar', id= flask.session['userID'], _scheme='https'))
 
 
 @router.route('/revoke')
