@@ -3,15 +3,24 @@ import axios from 'axios'
 
 const EditContact = (props) => {
 
+  const token = localStorage.getItem('token')
   const contactId = props.match.params.contactId
   const [contactData, setContactData] = useState({
     wants: []
   })
   // const [wants, setWants] = useState([])
 
+  if (!token) {
+    return window.location.replace('/login')
+
+  }
+
+
   useEffect(() => {
     console.log(contactId)
-    axios.get(`/api/contacts/${contactId}`)
+    axios.get(`/api/contacts/${contactId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(resp => {
         console.log(resp.data)
         setContactData(resp.data)
@@ -60,47 +69,24 @@ const EditContact = (props) => {
     // console.log(newWants)
   
   }
-
-
-  const [wantLength, setWantLength] = useState(contactData.wants.length)
   
   const [newWants, setNewWants] = useState([''])
 
   function addWantField(event) {
-    // const data = {
-    //   ...newWants
-    // } 
-    setNewWants(newWants.unshift(''))
-    // setNewWants(data)
-
+    if (!event.target.value) {
+      const data = [
+        ...newWants
+      ]
+      data.push('')
+      setNewWants(data)
+    }
   }
 
   console.log(newWants)
 
-  // function createNewField(){
-  //   console.log('new field?');
-  //   return <div className='field '>           
-  //     <div className="control has-icons-right">
-  //       <input
-  //         className='input'
-  //         type="text"
-  //         // onChange={(event) => {addWant(event)}}
-  //         onFocus={createNewField}
-  //         // defaultValue={contactData.wants[i]}
-  //         // value={contactData.wants[i]}
-  //         name='wantsNew'
-  //         placeholder='Add one by typing here...'
-  //       /><span 
-  //         className='icon is-right'>
-  //         <i className='delete' onClick={() => {emptyString(`wants[${i}]`)}}></i>
-  //       </span>
-  //     </div>
-  //   </div>
-
-  // }
-
 
   function emptyString(field) {
+    console.log(field)
     if (field.startsWith('wants[')) {
       const i = field.charAt(6)
       const data = {
@@ -108,8 +94,15 @@ const EditContact = (props) => {
       }
       console.log(contactData.field)      
       data.wants.splice(i, 1)
-      return setContactData(data)
-    }  else { 
+      return setContactData(data)      
+    } else if (field.startsWith('newWants[')) {
+      const i = field.charAt(9)
+      const data = [
+        ...newWants
+      ]
+      data.splice(i, 1)
+      return setNewWants(data)
+    } else { 
       const data = {
         ...contactData,
         [field]: ''
@@ -124,14 +117,15 @@ const EditContact = (props) => {
     event.preventDefault()
     console.log(event)
     const token = localStorage.getItem('token')
-    
+
+    newWants.splice(newWants.indexOf(''), 1)
     const initialWants = contactData.wants
     const finalWants = initialWants.concat(newWants)
     const finalData = {
       ...contactData,
       wants: finalWants
     }
-    // console.log(finalData)
+    console.log(finalData)
     axios.put(`/api/contacts/${contactId}`, finalData, {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -139,6 +133,9 @@ const EditContact = (props) => {
         props.history.push('/account')        
       })
   }
+
+
+
 
 
   return <section className='section mt-6 mb-3'>
@@ -193,14 +190,15 @@ const EditContact = (props) => {
             </div>
           </div>
         })}
-{/* 
+
         {newWants.map((w, i) => {
           return <div key={i} className='field '>            
             <div className="control has-icons-right">
               <input
                 className='input'
                 type="text"
-                // onFocus={addWantField}
+                onFocus={addWantField}
+                onBeforeInputCapture
                 onChange={(event) => {handleNewWantsChange(event, i)}}
                 // defaultValue={contactData.wants[i]}
                 value={newWants[i]}
@@ -208,19 +206,19 @@ const EditContact = (props) => {
                 placeholder='Add one by typing here...'
               /><span 
                 className='icon is-right'>
-                <i className='delete' onClick={() => {emptyString(`wants[${i}]`)}}></i>
+                <i className='delete' onClick={() => {emptyString(`newWants[${i}]`)}}></i>
               </span>
             </div>
           </div>
-        })} */}
+        })}
 
-        <div className='field '>           
+        {/* <div className='field '>           
           <div className="control has-icons-right">
             <input
               className='input'
               type="text"
               // onChange={(event) => {addWant(event)}}
-              // onFocus={addWantField}
+              onFocus={addWantField}
               onChange={(event) => {
 
                 handleNewWantsChange(event, (newWants.length - 1))
@@ -228,13 +226,13 @@ const EditContact = (props) => {
               // defaultValue={contactData.wants[i]}
               value={newWants[(newWants.length)]}
               name={newWants[(newWants.length)]}
-              placeholder='Add one by typing here...'
+              placeholder='Standalone - Add one by typing here...'
             /><span 
               className='icon is-right'>
               <i className='delete' onClick={() => {emptyString(`wants[${i}]`)}}></i>
             </span>
           </div>
-        </div>
+        </div> */}
 
 
         <button type='submit' className='button is-link mt-2'>Save</button>

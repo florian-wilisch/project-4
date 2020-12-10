@@ -5,14 +5,17 @@ from serializers.user import UserSchema
 from serializers.contact import ContactSchema
 from marshmallow import ValidationError
 from serializers.user_populate import UserPopSchema
+from middleware.secure_route import secure_route
 
 user_schema = UserSchema()
 user_pop_schema = UserPopSchema()
 contact_schema = ContactSchema()
+
 router = Blueprint(__name__, 'contacts')
 
 ## * Post single contact
 @router.route('/users/<int:user_id>/contacts', methods=['POST'])
+@secure_route
 def contact_create(user_id):
   contact_data = request.get_json()
   user = User.query.get(user_id)
@@ -25,7 +28,7 @@ def contact_create(user_id):
 
 ## * Update contact
 @router.route('/contacts/<int:contact_id>', methods=['PUT'])
-# @secure_route
+@secure_route
 def update_contact(contact_id):
   existing_contact = Contact.query.get(contact_id)
   print(request.get_json())
@@ -47,6 +50,7 @@ def update_contact(contact_id):
 
 
 @router.route('/users/<int:user_id>/contacts', methods=['GET'])
+@secure_route
 def get_all_contacts(user_id):
   contact_list = []
   for contact in Contact.query.all():
@@ -56,6 +60,7 @@ def get_all_contacts(user_id):
 
 
 @router.route('/contacts/<int:contact_id>', methods=['GET'])
+@secure_route
 def get_single_contact(contact_id):
   contact = Contact.query.get(contact_id)
   print(contact)
@@ -65,7 +70,7 @@ def get_single_contact(contact_id):
 
 
 @router.route('/contacts/<int:contact_id>', methods=['DELETE'])
-# @secure_route
+@secure_route
 def delete_single_contact(contact_id):
   contact = Contact.query.get(contact_id)
 

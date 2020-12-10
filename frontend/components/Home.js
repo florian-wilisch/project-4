@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 var $ = require("jquery")
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons'
+import Login from './Login'
 
 let contactFound = false
 let requestType = []
@@ -28,13 +29,19 @@ const Home = () => {
   const [recording, setRecording] = useState(false)
   const [micColor, setMicColor] = useState('white')
   // const [requestType, setRequestType] = useState([])
-
+  const token = localStorage.getItem('token')
+  const userId = localStorage.getItem('user_id')
   // const [contactFound, setContactFound] = useState(false)
+  const [print, setPrint] = useState('')
 
   const NatLangUrl = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${process.env.GoogleNatLangKey}`
   // console.log(NatLangUrl)
   const birthKeyWords = ['birthday', 'born']
 
+  if (!token) {
+    return window.location.replace('/login')
+
+  }
 
   function formatWants(list) {
 
@@ -66,10 +73,13 @@ const Home = () => {
   }, [updateSearch])
 
   useEffect(() => {
-    axios.get('/api/users/1')
+    axios.get(`/api/users/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(axiosResp => {
         setContactList(axiosResp.data.contacts)
       })
+    console.log('API | GET: Grabbing all contact of a user')
   }, [currentContact])
 
 
@@ -102,8 +112,13 @@ const Home = () => {
     }, 1000)
   }
 
-  function addContactWant(id, want) {
-    axios.get(`/api/contacts/${id}`)
+  console.log(currentWant)
+
+  function addContactWant(id, want) {    
+    console.log('API | GET: grabbing specific contact')
+    axios.get(`/api/contacts/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(resp => {
         const currentWant = resp.data['wants']
         for (let i = 0; i < want.length; i++)
@@ -111,30 +126,45 @@ const Home = () => {
             currentWant.push(want[i])
           }
         console.log('WANT TEST:', typeof want)
-        axios.put(`/api/users/1/contacts/${id}`, {
+        axios.put(`/api/contacts/${id}`, {
           'name': resp.data['name'],
           'wants': currentWant
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
         })
-        console.log(`Added ${want} to ${resp.data['name']}'s want list`)
+        console.log('API | PUT: adding want to contact')
+        console.log(`Added ${want} to ${resp.data['name']}'s wishlist`)
+        setPrint(`Added ${want[0]} to ${capitalizeFirstLetter(resp.data['name'])}'s Wishlist/Likes`)
       })
   }
 
   function addContactBirthday(id, birthday) {
-    axios.get(`/api/contacts/${id}`)
+    console.log('API | GET: grabbing specific contact')
+    axios.get(`/api/contacts/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(resp => {
-        axios.put(`/api/users/1/contacts/${id}`, {
+        axios.put(`/api/contacts/${id}`, {
           'name': resp.data['name'],
           'birthday': currentBirthday
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
         })
+        console.log('API | PUT: adding birthday to contact')
+        console.log(`Added ${birthday} to ${resp.data['name']}'s birthday info`)
+        setPrint(`Added ${birthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
       })
   }
 
 
   function addNewContact(name, want) {
+    console.log('API | POST: Creating new contact')
     console.log(`Created new contact: ${name}`)
-    axios.post('api/users/1/contacts', {
+    axios.post(`api/users/${userId}/contacts`, {
       'name': name,
       'wants': []
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then((response) => {
         console.log('TYPE', requestType)
@@ -142,14 +172,18 @@ const Home = () => {
         if (requestType.includes('WANT')) {
           console.log("REACHED WANT")
           addContactWant(response.data['id'], currentWant)
+          // setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${want[0]} to their wishlist`)
         }
         // Check if we want to add a birthday:
         if (requestType.includes('BIRTHDAY')) {
           console.log("REACHED BIRTHDAY")
           addContactBirthday(response.data['id'], currentBirthday)
+          // setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${currentBirthday} to their birthday info`)
         }
+        
       })
   }
+
 
   function googleLoginTest() {
     axios.get('/api/test/2')
@@ -241,8 +275,10 @@ const Home = () => {
     }
     if (wantsList.length > 0) {
       setCurrentWant(wantsList)
+      console.log()
     }
   }, [natLangResult])
+
 
   function resetAllValues() {
     contactFound = false
@@ -305,6 +341,7 @@ const Home = () => {
     }
   }, [updateSearch])
 
+  
   return <section className='homepage'>
 
     <section className='hero is-fullheight-with-navbar' >
@@ -312,10 +349,7 @@ const Home = () => {
 
         <div className="container has-text-centered" >
           {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
-
           {/* <i className="fa fa-microphone" aria-hidden="true"></i> */}
-
-
           {/* </button> */}
 
           <Vocal
@@ -347,14 +381,8 @@ const Home = () => {
               {recording ? (<div className="pulse-ring"></div>) : ''}        
               
             </button>
-
-          </Vocal> */}
-
-
-          {/* <span style={{ position: 'relative' }}> */}
-
-          {/* <input defaultValue={result} style={{ width: 300, height: 40 }} /> */}
-          {/* </span> */}
+          </Vocal>
+          {/* <FontAwesomeIcon className='icon' icon={faMicrophone} color='#2a363b' size='1x' /> */}
 
           <form onSubmit={(e) => {
             e.preventDefault()
@@ -368,6 +396,9 @@ const Home = () => {
             }}></input>
             <button className='button'>Submit</button>
           </form>
+
+          <p className='subtitle mt-2'>{print}</p>
+
           <div>
             <h1>Contact: {currentContact}</h1>
             <h1>Request type: {currentEvent}</h1>
@@ -376,7 +407,6 @@ const Home = () => {
             <button onClick={(e) => {
               if (currentContact.toLowerCase() !== 'none') {
                 getContactName(currentContact.toLowerCase())
-
               }
             }
             }>Click test</button>

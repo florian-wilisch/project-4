@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const Login = (props) => {
 
@@ -27,22 +28,21 @@ const Login = (props) => {
         localStorage.setItem('token', resp.data.token)
         localStorage.setItem('user_id', resp.data.user_id)
         localStorage.setItem('user_name', resp.data.user_name)
-        // localStorage.setItem('userEmail', resp.data.userEmail)
-        // localStorage.setItem('userAvatar', resp.data.userAvatar)
-        // localStorage.setItem('userBio', resp.data.userBio)
-        // localStorage.setItem('userCity', resp.data.userCity)
         console.log(resp)
         console.log(localStorage)
         props.history.push('/')
       })
       .catch(error => {
+        console.log(error.response.statusText)
+        console.log(error.TypeError)
         updateErrorMessage(error.response.statusText)
       })
   }
 
   return <section className='hero is-fullheight-with-navbar'>
     <div className="hero-body">
-      <div className="container is-fluid my-5">
+      <div className="container is-fluid my-5"> 
+        <h1 className='title'>Login</h1>       
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label">Email</label>
@@ -76,11 +76,20 @@ const Login = (props) => {
           <div className="field is-grouped is-grouped-right">
             <p className="control">
               <button className="button is-link">
-                Log In
+                Log in
               </button>
             </p>
           </div>
         </form>
+
+        <hr className="has-background-success"></hr>
+        <div className="columns is-vcentered is-mobile mb-0">
+          <div className='column help'>Not yet registered?</div>
+          <div className="column is-narrow">
+            <Link to='/register' className="button is-small is-light">Register</Link>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>

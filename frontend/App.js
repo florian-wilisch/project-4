@@ -7,6 +7,7 @@ import Home from './components/Home'
 import Navbar from './components/Navbar'
 import Account from './components/Account'
 import Login from './components/Login'
+import Register from './components/Register'
 import EditContact from './components/EditContact'
 
 const App = () => (
@@ -15,6 +16,7 @@ const App = () => (
     <Switch>
       <Route exact path="/" component={Home} />
       <Route exact path="/login" component={Login} />
+      <Route exact path="/register" component={Register} />
       <Route exact path="/account" component={Account} />
       <Route exact path="/contacts/:contactId/edit" component={EditContact} />
       <Route exact path="/hello/world" component={MyPage} />
