@@ -37,13 +37,13 @@ const NavBar = (props) => {
         <Link to="/" className="navbar-item" onClick={() => setisActive(!isActive)}>
           <strong>Home</strong>
         </Link>
-        {localStorage.getItem('token') &&<Link to="/account" className="navbar-item" onClick={() => setisActive(!isActive)}>Account</Link>}
+        {localStorage.getItem('token') && <Link to="/account" className="navbar-item" onClick={() => setisActive(!isActive)}>Account</Link>}
         {/* <Link to="/map" className="navbar-item">Map</Link> */}
       </div>
       <div className="navbar-end">
         <div className="navbar-item">
 
-          {!localStorage.getItem('token') && <Link className='button is-link' to='/register' onClick={() => setisActive(!isActive)}>Register</Link>}
+          {!localStorage.getItem('token') && <Link className='button is-link has-text-white' to='/register' onClick={() => setisActive(!isActive)}>Register</Link>}
           {!localStorage.getItem('token') && <Link to="/login" className="button is-light ml-2" onClick={() => setisActive(!isActive)}>Login</Link>}
           {/* {localStorage.getItem('token') && <p>Welcome back <Link className="is-capitalized" to={`/users/${userId}`}><strong className="is-link">{userName}</strong></Link></p>}
           {localStorage.getItem('token') && <Link to='/locations/new-location' className="button is-link">Add Location</Link>} */}
