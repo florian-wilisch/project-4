@@ -5,6 +5,14 @@ from flask import Blueprint, request, g
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
+from environment.config import secret
+from serializers.user import UserSchema
+from models.user import User
+from app import db, ma
+import datetime
+import json
+from serializers.user_populate import UserPopSchema
+
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
@@ -12,15 +20,21 @@ CLIENT_SECRETS_FILE = "credentials.json"
 
 # This OAuth 2.0 access scope allows for full read/write access to the
 # authenticated user's account and requires requests to use an SSL connection.
-SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
-API_SERVICE_NAME = 'youtube'
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
 app = flask.Flask(__name__)
-# Note: A secret key is included in the sample so that it works.
-# If you use this code in your application, replace this with a truly secret
-# key. See https://flask.palletsprojects.com/quickstart/#sessions.
-app.secret_key = 'REPLACE ME - this value is here as a placeholder.'
+# # Note: A secret key is included in the sample so that it works.
+# # If you use this code in your application, replace this with a truly secret
+# # key. See https://flask.palletsprojects.com/quickstart/#sessions.
+app.secret_key = 'random key'
+
+
+user_schema = UserSchema()
+user_pop_schema = UserPopSchema()
+
+
 router = Blueprint(__name__, 'goog_auth')
 
 @router.route('/goog')
@@ -28,58 +42,109 @@ def index():
   return print_index_table()
 
 
-@router.route('/test')
-def test_api_request():
-  if 'credentials' not in flask.session:
-    return flask.redirect('authorize')
+@router.route('/test/<int:id>', methods=['GET','POST'])
+def test_api_request(id):
+  event_request = request.get_json()
+  print("EVENT RESULT HERE:", event_request)
 
-  # Load credentials from the session.
-  credentials = google.oauth2.credentials.Credentials(
-      **flask.session['credentials'])
+  flask.session['userID'] = id
+  result = db.engine.execute(f"""SELECT "google_Auth_Token" FROM users WHERE id = {id};""")
+  for i in result:
+    print("<----------------------INFO START---------------------->")
+    print('A LITTLE TEST:', i[0])
+    print("<----------------------INFO END---------------------->")
+    if i[0] == 'Unregistered':
+      print("IT IS!!")
+      return flask.redirect(f'authorize')
 
-  youtube = googleapiclient.discovery.build(
+  result = db.engine.execute(f"""SELECT "google_Auth_Token" FROM users WHERE id = {id};""")
+  for i in result:
+    # print('TEST CREDS:', i[0])
+    credentials = google.oauth2.credentials.Credentials(
+          **json.loads(i[0]))
+  print('CREDENTIALS HERE:', credentials)
+
+  service = googleapiclient.discovery.build(
       API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-  channel = youtube.channels().list(mine=True, part='snippet').execute()
+  now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+  print('Getting the upcoming 10 events')
+  events_result = service.events().list(calendarId='primary', timeMin=now,
+                                      maxResults=10, singleEvents=True,
+                                      orderBy='startTime').execute()
+
+
 
   # Save credentials back to session in case access token was refreshed.
-  # ACTION ITEM: In a production app, you likely want to save these
-  #              credentials in a persistent database instead.
+ 
   flask.session['credentials'] = credentials_to_dict(credentials)
+  print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
 
-  return flask.jsonify(**channel)
+  if event_request is not None:
+    print('SUBMITTING TO CALENDAR...', event_request)
+    event_request = service.events().insert(calendarId='primary', body=event_request).execute()
+
+    add_event = service.events().insert(calendarId='primary', )
 
 
-@router.route('/authorize')
+  events = events_result.get('items', [])
+  if not events:
+        print('No upcoming events found.')
+  for event in events:
+      start = event['start'].get('dateTime', event['start'].get('date'))
+      print(start, event['summary'])
+
+
+
+  return "Success", 200
+
+
+@router.route('/test/authorize')
 def authorize():
+  id = flask.session['userID']
+  print('start flow')
+  
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+  print(f'Current User ID: {id}')
 
   # The URI created here must exactly match one of the authorized redirect URIs
   # for the OAuth 2.0 client, which you configured in the API Console. If this
   # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
   # error.
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
-
+  flow.redirect_uri = flask.url_for(f'controllers.goog_auth.oauth2callback',  _external=True)
+  # print('start flow3')
+  print('redirect:', flow.redirect_uri)
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
       # re-prompting the user for permission. Recommended for web server apps.
-      access_type='offline',
-      # Enable incremental authorization. Recommended as a best practice.
-      include_granted_scopes='true')
-
+      access_type='offline', include_granted_scopes='false')
+  # print('start flow4')
   # Store the state so the callback can verify the auth server response.
   flask.session['state'] = state
+  
+  # print('start flow5')
 
-  return flask.redirect(authorization_url)
+  print(flask.session)
+  print(flask.session['userID'])
+  print(authorization_url)
+  return (authorization_url)
+  # return flask.redirect(authorization_url)
 
 
 @router.route('/oauth2callback')
 def oauth2callback():
+  id = flask.session['userID']
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
+  print("<----------------------GOT SENT TO REGISTER PAGE---------------------->")
+  # print(user_id)
   state = flask.session['state']
+
+  # print("<----------------------End of STATE---------------------->")
+  
 
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
@@ -87,15 +152,19 @@ def oauth2callback():
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = flask.request.url
+  print(authorization_response)
   flow.fetch_token(authorization_response=authorization_response)
 
   # Store credentials in the session.
   # ACTION ITEM: In a production app, you likely want to save these
   #              credentials in a persistent database instead.
   credentials = flow.credentials
-  flask.session['credentials'] = credentials_to_dict(credentials)
 
-  return flask.redirect(flask.url_for('test_api_request'))
+  
+  flask.session['credentials'] = credentials_to_dict(credentials)
+  print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
+
+  return flask.redirect(flask.url_for('controllers.goog_auth.test_api_request', id= flask.session['userID']))
 
 
 @router.route('/revoke')
@@ -127,12 +196,14 @@ def clear_credentials():
 
 
 def credentials_to_dict(credentials):
-  return {'token': credentials.token,
+  dicti = {'token': credentials.token,
           'refresh_token': credentials.refresh_token,
           'token_uri': credentials.token_uri,
           'client_id': credentials.client_id,
           'client_secret': credentials.client_secret,
           'scopes': credentials.scopes}
+  # print("DICTIONARY TOKENS HERE:", dicti)
+  return dicti
 
 def print_index_table():
   return ('<table>' +

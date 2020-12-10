@@ -36,14 +36,6 @@ const Home = () => {
   const birthKeyWords = ['birthday', 'born']
 
 
-  function goPython() {
-    $.ajax({
-      url: "./quickstart.py"
-    }).done(function () {
-      alert('finished python script')
-    })
-  }
-
   function formatWants(list) {
 
     console.log('NAME:', list)
@@ -160,30 +152,48 @@ const Home = () => {
   }
 
   function googleLoginTest() {
-    axios.post(`/api/users/test`, {
-      'summary': `${currentContact}'s birthday!`,
-      'description': `${currentContact}'s Wishlist: ${strTest}`,
-      'start': {
-        'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
-        'timeZone': 'Europe/Zurich'
-      },
-      'end': {
-        'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
-        'timeZone': 'Europe/Zurich'
-      },
-      'reminders': {
-        'useDefault': false,
-        'overrides': [
-          { 'method': 'email', 'minutes': 40320 },
-          { 'method': 'popup', 'minutes': 40320 }
-        ]
-      }
+    axios.get('/api/test/2')
+      .then((resp) => {
+        console.log(resp.data)
+        if (resp.data !== 'Success') {
+          window.open(resp.data)
+        }
+      })
 
-    })
   }
 
 
+  function sendToCalendar() {
+    if (requestType.includes('BIRTHDAY')) {
 
+      axios.get('/api/test/2')
+        .then((resp) => {
+          console.log(resp.data)
+          if (resp.data === 'Success') {
+
+            axios.post(`/api/test/2`, {
+              'summary': `${currentContact}'s birthday!`,
+              'description': `${currentContact}'s Wishlist: ${strTest}`,
+              'start': {
+                'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
+                'timeZone': 'Europe/Zurich'
+              },
+              'end': {
+                'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
+                'timeZone': 'Europe/Zurich'
+              },
+              'reminders': {
+                'useDefault': false,
+                'overrides': [
+                  { 'method': 'email', 'minutes': 40320 },
+                  { 'method': 'popup', 'minutes': 40320 }
+                ]
+              }
+            })
+          }
+        })
+    }
+  }
 
 
   useEffect(() => {
@@ -297,14 +307,8 @@ const Home = () => {
 
   return <section className='homepage'>
 
-
-
-
     <section className='hero is-fullheight-with-navbar' >
       <div className="hero-body is-align-items-center has-text-centered">
-
-
-
 
         <div className="container has-text-centered" >
           {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
@@ -317,20 +321,21 @@ const Home = () => {
           <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
-            onEnd={() =>{
+            onEnd={() => {
               console.log('recoding stopped')
-              setRecording(false)}}
+              setRecording(false)
+            }}
             style={{ width: 100, height: 100, position: 'absolute', left: '17%', top: '17%' }}
           >
             <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '20%', zIndex: '0', marginBottom: '15px' }}>
-              <svg data-testid="__icon-root__" xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 24 24" style={{ position: 'absolute', left: '25%',top: '25%', zIndex: '1' }}>
+              <svg data-testid="__icon-root__" xmlns="http://www.w3.org/2000/svg" width="50%" height="50%" viewBox="0 0 24 24" style={{ position: 'absolute', left: '25%', top: '25%', zIndex: '1' }}>
                 <path data-testid="__icon-path__" fill={micColor} d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path>
               </svg>
 
               {recording ? (<div className="pulse-ring"></div>) : ''}
 
-        </button>
-        </Vocal>
+            </button>
+          </Vocal>
           {/* <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
@@ -380,13 +385,19 @@ const Home = () => {
           <button onClick={() => {
             googleLoginTest()
           }}>
-            <h1> Run my python Calendar script</h1>
+            <h1>Google Login</h1>
           </button>
+          <button onClick={(e) => {
+            if (currentContact.toLowerCase() !== 'none') {
+              sendToCalendar()
+            }
+          }
+          }>Send To Calendar</button>
           <button onClick={(e) => {
             resetAllValues()
           }
           }>Reset all</button>
-          <button onClick={(e)=>{}}>Stop recording</button>
+
 
         </div>
       </div>
