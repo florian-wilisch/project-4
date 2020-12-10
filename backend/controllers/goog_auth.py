@@ -126,7 +126,7 @@ def authorize():
 
   print(flask.session)
   print(flask.session['userID'])
-  print(authorization_url)
+  print('_________AUTHORIZATION URL:_________', authorization_url)
   return (authorization_url)
   # return flask.redirect(authorization_url)
 
@@ -149,7 +149,8 @@ def oauth2callback():
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = flask.request.url
-  print(authorization_response)
+  print("|||||||||||||||||||AUTHORIZATION RESPONSE:|||||||||||||||||||", authorization_response)
+  print('|||||||||||||||||||AUTHORIZATION END|||||||||||||||||||')
   flow.fetch_token(authorization_response=authorization_response)
 
   # Store credentials in the session.
@@ -228,8 +229,8 @@ if __name__ == '__main__':
   # When running locally, disable OAuthlib's HTTPs verification.
   # ACTION ITEM for developers:
   #     When running in production *do not* leave this option enabled.
-  os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
+  # os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
 
   # Specify a hostname and port that are set as a valid redirect URI
   # for your API project in the Google API Console.
-  app.run('localhost', 8080, debug=True)
+  app.run('localhost', 8080)
