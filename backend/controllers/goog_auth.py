@@ -100,7 +100,7 @@ def handle_google_calendar(id):
 
 
 
-  return '', 200
+  return 'success', 200
 
 
 @router.route('/calendar_actions/authorize')
