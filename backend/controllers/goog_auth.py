@@ -87,7 +87,7 @@ def handle_google_calendar(id):
     event_request = service.events().insert(calendarId='primary', body=event_request).execute()
     
     
-    
+
     add_event = service.events().insert(calendarId='primary', )
 
 
@@ -153,6 +153,8 @@ def oauth2callback():
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = flask.request.url
+
+  authorization_response = authorization_response.replace('http', 'https')
   print("|||||||||||||||||||AUTHORIZATION RESPONSE:|||||||||||||||||||", authorization_response)
   print('|||||||||||||||||||AUTHORIZATION END|||||||||||||||||||')
   flow.fetch_token(authorization_response=authorization_response)
