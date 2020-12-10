@@ -202,7 +202,7 @@ const Home = () => {
 
 
   function sendToCalendar() {
-    if (requestType.includes('BIRTHDAY') && (birthdayDay !== '')) {
+    if ((requestType.includes('BIRTHDAY')) && (currentBirthday !== 'None')) {
       setTimeout(() => {
         axios.get(`/api/calendar_actions/${userId}`)
           .then((resp) => {
