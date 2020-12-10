@@ -82,7 +82,7 @@ def handle_google_calendar(id):
   flask.session['credentials'] = credentials_to_dict(credentials)
   print('_________________________PRINT TEST_____________')
   print('event_request:', event_request)
-    print('_________________________PRINT TEST END_____________')
+  print('_________________________PRINT TEST END_____________')
   print("USER TOKEN INFO", db.engine.execute(f"""UPDATE users SET "google_Auth_Token" = '{json.dumps(flask.session['credentials'])}' WHERE id = {id};"""))
 
   if event_request is not None:
