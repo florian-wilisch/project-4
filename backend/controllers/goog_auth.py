@@ -98,8 +98,6 @@ def handle_google_calendar(id):
       start = event['start'].get('dateTime', event['start'].get('date'))
       print(start, event['summary'])
 
-
-
   return 'Successfully connected rmbr to your google calendar! You can close this tab now!', 200
 
 

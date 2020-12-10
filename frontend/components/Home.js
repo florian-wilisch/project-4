@@ -210,7 +210,7 @@ const Home = () => {
             console.log(resp.data)
             if (resp.data === 'Success') {
 
-              axios.post(`/api/calendar_actions/2`, {
+              axios.post(`/api/calendar_actions/${userId}`, {
                 'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
                 'description': `${currentContact}'s Wishlist: ${strTest}`,
                 'start': {
@@ -409,7 +409,7 @@ const Home = () => {
           <div className="columns is-vcentered is-mobile mb-0">
             <button className='button' onClick={(e) => {
               sendToCalendar()
-            }}>Add to calendar</button>
+            }}>Add to calendar Test</button>
             <div className='column help'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
