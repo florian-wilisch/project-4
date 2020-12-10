@@ -38,9 +38,9 @@ const Home = () => {
   // console.log(NatLangUrl)
   const birthKeyWords = ['birthday', 'born']
 
-  // if (!token) {
-  //   return window.location.replace('/login')
-  // }
+  if (!token) {
+    return window.location.replace('/login')
+  }
 
   function formatWants(list) {
 
@@ -56,7 +56,6 @@ const Home = () => {
   }
 
   function capitalizeFirstLetter(name) {
-    // console.log(name)
     name = name[0].toUpperCase() + name.slice(1)
     return name
   }
@@ -81,11 +80,15 @@ const Home = () => {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(axiosResp => {
+        console.log(axiosResp.data.contacts)
         setContactList(axiosResp.data.contacts)
+        console.log(contactList)
       })
     console.log('API | GET: Grabbing all contacts of a user')
-  }, [currentContact])
-
+  }, 
+  [currentContact]
+  )
+  
 
   function handleContactInfo(name) {
     console.log('inside handleContactInfo')
@@ -93,9 +96,10 @@ const Home = () => {
       console.log("CONTACT NAME:", name)
       console.log("CONTACT LIST:", contactList)
       for (let i = 0; i < contactList.length; i++) {
-        // console.log("Friend name", contactList[i]['name'])
-        // console.log('NATLANG result', name)
+        console.log("Friend name", contactList[i]['name'])
+        console.log('NATLANG result', name)
         if (contactList[i]['name'] === name) {
+          console.log(contactList[i]['name'])
           setWantList(contactList[i]['wants'])
           formatWants(contactList[i]['wants'])
           console.log('wantlist:', wantList)
@@ -123,7 +127,7 @@ const Home = () => {
       handleContactInfo(currentContact.toLowerCase())
       setSendInfo(false)
     }
-  } ,[currentContact])
+  } ,[contactList])
   
 
   // console.log(currentWant)
@@ -313,7 +317,8 @@ const Home = () => {
     setBirthdayMonth('')
     setFormattedWantList('')
     setRecording(false)
-
+    setPrint('')
+    setSendInfo(false)
   }
 
 
@@ -322,7 +327,7 @@ const Home = () => {
 
   const _onVocalStart = () => {
     setMicColor('black')
-    // resetAllValues()
+    resetAllValues()
     setRecording(true)
     setResult('')
   }
@@ -356,8 +361,6 @@ const Home = () => {
     }
   }, [updateSearch])
 
-// comment adam hello
-
   
   return <section className='homepage'>
 
@@ -368,7 +371,11 @@ const Home = () => {
           {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
           {/* <i className="fa fa-microphone" aria-hidden="true"></i> */}
           {/* </button> */}
-
+          {/* <button 
+            className="button" 
+            onClick={() => {resetAllValues()}}>
+              Clear
+          </button> */}
           <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
@@ -397,18 +404,26 @@ const Home = () => {
             setUpdateSearch(!updateSearch)
             setSendInfo(true)
           }}>
-            <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
-              // resetAllValues()
-              getSearchVal(e.target.value.toLocaleLowerCase())
-              setResult(e.target.value.toLocaleLowerCase())
+            <input placeholder="Input Request" value={result} className='input my-2' onChange={(e) => { 
+              // getSearchVal(e.target.value.toLocaleLowerCase())
+              setResult(e.target.value)
             }}
-            //  onFocus={console.log('delete')}
-             ></input>
+            onFocus={() => {resetAllValues()}}
+            ></input>
             <button className='button'>Submit</button>
           </form>
 
-          <p className='subtitle mt-2'>{print}</p>
-
+          <p className=' mt-2 subtitle'>{print}</p>
+          {/* {print && <div className="columns is-vcentered is-mobile mt-2">
+            <div className='column subtitle has-text-left'>{print}</div>
+            <div className="column is-narrow">
+              <button className="button is-small is-light" onClick={() => {
+                googleLogin()
+              }}>
+                Revert
+              </button>
+            </div>
+          </div>} */}
 
           <hr className="has-background-success mt-2 mx-2"></hr>
           <div className="columns is-vcentered is-mobile mb-0">
