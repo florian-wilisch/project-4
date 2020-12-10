@@ -85,6 +85,7 @@ def handle_google_calendar(id):
   if event_request is not None:
     print('SUBMITTING TO CALENDAR...', event_request)
     event_request = service.events().insert(calendarId='primary', body=event_request).execute()
+    
 
     add_event = service.events().insert(calendarId='primary', )
 
