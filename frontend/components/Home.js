@@ -32,15 +32,15 @@ const Home = () => {
   const userId = localStorage.getItem('user_id')
   // const [contactFound, setContactFound] = useState(false)
   const [print, setPrint] = useState('')
+  const [sendInfo, setSendInfo] = useState(false)
 
   const NatLangUrl = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${process.env.GoogleNatLangKey}`
   // console.log(NatLangUrl)
   const birthKeyWords = ['birthday', 'born']
 
-  if (!token) {
-    return window.location.replace('/login')
-
-  }
+  // if (!token) {
+  //   return window.location.replace('/login')
+  // }
 
   function formatWants(list) {
 
@@ -83,11 +83,12 @@ const Home = () => {
       .then(axiosResp => {
         setContactList(axiosResp.data.contacts)
       })
-    console.log('API | GET: Grabbing all contact of a user')
+    console.log('API | GET: Grabbing all contacts of a user')
   }, [currentContact])
 
 
   function handleContactInfo(name) {
+    console.log('inside handleContactInfo')
     setTimeout(() => {
       console.log("CONTACT NAME:", name)
       console.log("CONTACT LIST:", contactList)
@@ -113,8 +114,17 @@ const Home = () => {
         // console.log("RETURN THE BETTER FUNCT")
         addNewContact(name, currentWant)
       }
-    }, 500)
+    }, 1000)
   }
+
+  useEffect(() => {
+    if (sendInfo && (currentContact.toLowerCase() !== 'none')) {
+      console.log(currentContact.toLowerCase())
+      handleContactInfo(currentContact.toLowerCase())
+      setSendInfo(false)
+    }
+  } ,[currentContact])
+  
 
   // console.log(currentWant)
 
@@ -312,7 +322,7 @@ const Home = () => {
 
   const _onVocalStart = () => {
     setMicColor('black')
-    resetAllValues()
+    // resetAllValues()
     setRecording(true)
     setResult('')
   }
@@ -324,9 +334,7 @@ const Home = () => {
     console.log('RESULTS', result)
     setResult(result)
     setUpdateSearch(true)
-    if (currentContact.toLowerCase() !== 'none') {
-      handleContactInfo(currentContact.toLowerCase())
-    }
+    setSendInfo(true)
   }
   // Voice Stuff Ends //
 
@@ -364,10 +372,11 @@ const Home = () => {
           <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
-            onEnd={() => {
-              console.log('recoding stopped')
-              setRecording(false)
-            }}
+            // onEnd={() => {
+            //   console.log('recoding stopped')
+            //   setRecording(false)
+            // }}
+            // onClick={() => {resetAllValues()}}
             style={{ width: 100, height: 100, position: 'absolute', left: '17%', top: '17%' }}
           >
             <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '20%', zIndex: '0', marginBottom: '15px' }}>
@@ -386,14 +395,15 @@ const Home = () => {
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
-            if (currentContact.toLowerCase() !== 'none') {
-              handleContactInfo(currentContact.toLowerCase())
-            }
+            setSendInfo(true)
           }}>
             <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
+              // resetAllValues()
               getSearchVal(e.target.value.toLocaleLowerCase())
               setResult(e.target.value.toLocaleLowerCase())
-            }}></input>
+            }}
+            //  onFocus={console.log('delete')}
+             ></input>
             <button className='button'>Submit</button>
           </form>
 
@@ -402,7 +412,7 @@ const Home = () => {
 
           <hr className="has-background-success mt-2 mx-2"></hr>
           <div className="columns is-vcentered is-mobile mb-0">
-            <div className='column help'>Connect rmbr to your Google Calendar:</div>
+            <div className='column help has-text-left'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
                 googleLogin()
