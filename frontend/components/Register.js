@@ -8,6 +8,7 @@ const Register = (props) => {
     username: '',
     email: '',
     password: '',
+    passwordConfirmation: '',
     google_Auth_Token: 'Unregistered'
   })
 
@@ -16,7 +17,7 @@ const Register = (props) => {
     email: '',
     password: ''
   })
-
+  const [errorMessage, updateErrorMessage] = useState('')
   
   function handleChange(event) {
 
@@ -40,20 +41,21 @@ const Register = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault()
-    axios.post('/api/signup', formData)
-      .then(resp => {
-        if (resp.data.errors) {
-          updateErrors(resp.data.errors)
-          console.log(errors)
-        } else {
-          console.log(formData)
-          props.history.push('/login')
-        }
-      })
+    if (formData.password !== formData.passwordConfirmation) {
+      return updateErrorMessage('The password and confirmation need to match.')
+    }
+    delete formData.passwordConfirmation
 
+    axios.post('/api/signup', formData)
+      .then((resp) => {
+        console.log(resp)
+        props.history.push('/login')
+      })
+      .catch(error => {
+        updateErrorMessage(error.response.data.message)
+      })
   }
 
-  console.log(formData)
 
   return <section className='hero is-fullheight-with-navbar'>
     <div className="hero-body">
@@ -71,9 +73,9 @@ const Register = (props) => {
                 name="username"
                 className="input"
               />
-              {errors.username && <p className="help" style={{ color: 'red' }}>
+              {/* {errors.username && <p className="help" style={{ color: 'red' }}>
                 {'There was a problem with your Username'}
-              </p>}
+              </p>} */}
             </div>
             <p className="help">Please choose a unique username</p>
           </div>
@@ -87,9 +89,9 @@ const Register = (props) => {
                 name="email"
                 className="input"
               />
-              {errors.email && <p className="help" style={{ color: 'red' }}>
+              {/* {errors.email && <p className="help" style={{ color: 'red' }}>
                 {'There was a problem with your Email'}
-              </p>}
+              </p>} */}
             </div>
             <p className="help">e.g. example@example.com</p>
           </div>
@@ -104,9 +106,9 @@ const Register = (props) => {
                 name="password"
                 className="input"
               />
-              {errors.password && <p className="help" style={{ color: 'red' }}>
+              {/* {errors.password && <p className="help" style={{ color: 'red' }}>
                 {'There was a problem with your Password'}
-              </p>}
+              </p>} */}
             </div>
             <p className="help">Create a password</p>
           </div>
@@ -115,17 +117,20 @@ const Register = (props) => {
             <div className="control">
               <input
                 type="password"
-                // onChange={handleChange}
+                onChange={handleChange}
                 value={formData.passwordConfirmation}
                 name="passwordConfirmation"
                 className="input"
               />
-              {errors.passwordConfirmation && <p className="help" style={{ color: 'red' }}>
+              {/* {errors.passwordConfirmation && <p className="help" style={{ color: 'red' }}>
                 {'Does not match password'}
-              </p>}
+              </p>} */}
             </div>
             <p className="help">Please make sure your passwords match</p>
           </div>
+          <p className="help" style={{ color: 'red' }}>
+            {errorMessage}
+          </p>
           <div className="field is-grouped is-grouped-right">
             <p className="control">
               <button className="button is-link">

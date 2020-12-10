@@ -93,6 +93,7 @@ const Home = () => {
       .then(axiosResp => {
         setContactList(axiosResp.data.contacts)
       })
+    console.log('API | GET: Grabbing all contact of a user')
   }, [currentContact])
 
 
@@ -127,7 +128,8 @@ const Home = () => {
 
   console.log(currentWant)
 
-  function addContactWant(id, want) {
+  function addContactWant(id, want) {    
+    console.log('API | GET: grabbing specific contact')
     axios.get(`/api/contacts/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -144,12 +146,14 @@ const Home = () => {
         }, {
           headers: { Authorization: `Bearer ${token}` }
         })
+        console.log('API | PUT: adding want to contact')
         console.log(`Added ${want} to ${resp.data['name']}'s wishlist`)
-        setPrint(`Added ${want[0]} to ${capitalizeFirstLetter(resp.data['name'])}'s wishlist`)
+        setPrint(`Added ${want[0]} to ${capitalizeFirstLetter(resp.data['name'])}'s Wishlist/Likes`)
       })
   }
 
   function addContactBirthday(id, birthday) {
+    console.log('API | GET: grabbing specific contact')
     axios.get(`/api/contacts/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -160,6 +164,7 @@ const Home = () => {
         }, {
           headers: { Authorization: `Bearer ${token}` }
         })
+        console.log('API | PUT: adding birthday to contact')
         console.log(`Added ${birthday} to ${resp.data['name']}'s birthday info`)
         setPrint(`Added ${birthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
       })
@@ -167,6 +172,7 @@ const Home = () => {
 
 
   function addNewContact(name, want) {
+    console.log('API | POST: Creating new contact')
     console.log(`Created new contact: ${name}`)
     axios.post(`api/users/${userId}/contacts`, {
       'name': name,
@@ -180,13 +186,13 @@ const Home = () => {
         if (requestType.includes('WANT')) {
           console.log("REACHED WANT")
           addContactWant(response.data['id'], currentWant)
-          setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${want[0]} to their wishlist`)
+          // setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${want[0]} to their wishlist`)
         }
         // Check if we want to add a birthday:
         if (requestType.includes('BIRTHDAY')) {
           console.log("REACHED BIRTHDAY")
           addContactBirthday(response.data['id'], currentBirthday)
-          setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${currentBirthday} to their birthday info`)
+          // setPrint(`Created new contact - ${capitalizeFirstLetter(name)} - and added ${currentBirthday} to their birthday info`)
         }
         
       })
