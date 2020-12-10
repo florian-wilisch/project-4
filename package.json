@@ -8,7 +8,7 @@
     "serve:backend": "pipenv run flask run",
     "build": "pipenv install;",
     "serve:react": "webpack-dev-server",
-    "serve:flask": "pipenv run flask run  --cert=adhoc"
+    "serve:flask": "echo hello: pipenv run flask run  --cert=adhoc"
   },
   "author": "",
   "license": "ISC",
