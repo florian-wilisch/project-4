@@ -156,7 +156,9 @@ const Home = () => {
         })
         console.log('API | PUT: adding birthday to contact')
         console.log(`Added ${birthday} to ${resp.data['name']}'s birthday info`)
-        setPrint(`Added ${currentBirthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
+        if (currentBirthday !== 'None') {
+          setPrint(`Added ${currentBirthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
+        }
       })
   }
 
@@ -209,7 +211,7 @@ const Home = () => {
           .then((resp) => {
             console.log('RESP DATA:', resp.data)
             if (resp.data[0] === 'S') {
-              
+
 
               axios.post(`/api/calendar_actions/${userId}`, {
                 'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
