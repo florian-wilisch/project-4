@@ -4,14 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 import os
-# from flask_cors import CORS
+from flask_cors import CORS
 
 app = Flask(__name__, static_folder='dist')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config.update(dict(PREFERRED_URL_SCHEME = 'https'))
-# CORS(app)
+CORS(app)
 app.secret_key = secret
 # print(app.config)
 db = SQLAlchemy(app)
