@@ -39,7 +39,6 @@ const Home = () => {
 
   if (!token) {
     return window.location.replace('/login')
-
   }
 
   function formatWants(list) {
@@ -138,7 +137,11 @@ const Home = () => {
         })
         console.log('API | PUT: adding want to contact')
         console.log(`Added ${want} to ${resp.data['name']}'s wishlist`)
+        if ((wantsList.length > 1) || (currentWant.length > 1)){
+          setPrint(`Added multiple items to ${capitalizeFirstLetter(resp.data['name'])}'s Wishlist/Likes`)
+        }else{
         setPrint(`Added ${want[0]} to ${capitalizeFirstLetter(resp.data['name'])}'s Wishlist/Likes`)
+        }
       })
   }
 
@@ -217,11 +220,11 @@ const Home = () => {
                 'summary': `${capitalizeFirstLetter(currentContact)}'s birthday!`,
                 'description': `${currentContact}'s Wishlist: ${strTest}`,
                 'start': {
-                  'dateTime': `2020-${birthdayMonth}-${birthdayDay}T14:30:00`,
+                  'dateTime': `2021-${birthdayMonth}-${birthdayDay}T14:30:00`,
                   'timeZone': 'Europe/Zurich'
                 },
                 'end': {
-                  'dateTime': `2020-${birthdayMonth}-${birthdayDay}T17:00:00`,
+                  'dateTime': `2021-${birthdayMonth}-${birthdayDay}T17:00:00`,
                   'timeZone': 'Europe/Zurich'
                 },
                 'reminders': {
