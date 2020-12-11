@@ -156,7 +156,7 @@ const Home = () => {
         })
         console.log('API | PUT: adding birthday to contact')
         console.log(`Added ${birthday} to ${resp.data['name']}'s birthday info`)
-        setPrint(`Added ${birthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
+        setPrint(`Added ${currentBirthday} to ${capitalizeFirstLetter(resp.data['name'])}'s birthday info`)
       })
   }
 
@@ -408,9 +408,9 @@ const Home = () => {
 
           <hr className="has-background-success mt-2 mx-2"></hr>
           <div className="columns is-vcentered is-mobile mb-0">
-            <button className='button' onClick={(e) => {
+            {/* <button className='button' onClick={(e) => {
               sendToCalendar()
-            }}>Add to calendar Test</button>
+            }}>Add to calendar Test</button> */}
             <div className='column help'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
