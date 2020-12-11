@@ -6,13 +6,9 @@
   "scripts": {
     "serve:frontend": "webpack-dev-server --mode=development",
     "serve:backend": "pipenv run flask run",
-    "build": "pipenv install; npm i; webpack -p",
+    "build": "pipenv install; npm i; webpack -p", 
     "serve:react": "webpack-dev-server",
-<<<<<<< HEAD
-    "serve:flask": "pipenv run flask run  --cert=adhoc"
-=======
     "serve:flask": "pipenv run flask run"
->>>>>>> a41b145f6a8ae663d97a171a3d42b945f9cce741
   },
   "author": "",
   "license": "ISC",
