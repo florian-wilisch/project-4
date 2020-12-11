@@ -32,6 +32,7 @@ const Home = () => {
   const userId = localStorage.getItem('user_id')
   // const [contactFound, setContactFound] = useState(false)
   const [print, setPrint] = useState('')
+  const [sendInfo, setSendInfo] = useState(false)
 
   const NatLangUrl = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${process.env.GoogleNatLangKey}`
   // console.log(NatLangUrl)
@@ -55,7 +56,6 @@ const Home = () => {
   }
 
   function capitalizeFirstLetter(name) {
-    // console.log(name)
     name = name[0].toUpperCase() + name.slice(1)
     return name
   }
@@ -80,20 +80,26 @@ const Home = () => {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(axiosResp => {
+        console.log(axiosResp.data.contacts)
         setContactList(axiosResp.data.contacts)
+        console.log(contactList)
       })
-    console.log('API | GET: Grabbing all contact of a user')
-  }, [currentContact])
-
+    console.log('API | GET: Grabbing all contacts of a user')
+  }, 
+  [currentContact]
+  )
+  
 
   function handleContactInfo(name) {
+    console.log('inside handleContactInfo')
     setTimeout(() => {
       console.log("CONTACT NAME:", name)
       console.log("CONTACT LIST:", contactList)
       for (let i = 0; i < contactList.length; i++) {
-        // console.log("Friend name", contactList[i]['name'])
-        // console.log('NATLANG result', name)
+        console.log("Friend name", contactList[i]['name'])
+        console.log('NATLANG result', name)
         if (contactList[i]['name'] === name) {
+          console.log(contactList[i]['name'])
           setWantList(contactList[i]['wants'])
           formatWants(contactList[i]['wants'])
           console.log('wantlist:', wantList)
@@ -112,8 +118,17 @@ const Home = () => {
         // console.log("RETURN THE BETTER FUNCT")
         addNewContact(name, currentWant)
       }
-    }, 500)
+    }, 1000)
   }
+
+  useEffect(() => {
+    if (sendInfo && (currentContact.toLowerCase() !== 'none')) {
+      console.log(currentContact.toLowerCase())
+      handleContactInfo(currentContact.toLowerCase())
+      setSendInfo(false)
+    }
+  } ,[contactList])
+  
 
   // console.log(currentWant)
 
@@ -312,7 +327,8 @@ const Home = () => {
     setBirthdayMonth('')
     setFormattedWantList('')
     setRecording(false)
-
+    setPrint('')
+    setSendInfo(false)
   }
 
 
@@ -333,9 +349,7 @@ const Home = () => {
     console.log('RESULTS', result)
     setResult(result)
     setUpdateSearch(true)
-    if (currentContact.toLowerCase() !== 'none') {
-      handleContactInfo(currentContact.toLowerCase())
-    }
+    setSendInfo(true)
   }
   // Voice Stuff Ends //
 
@@ -357,9 +371,7 @@ const Home = () => {
     }
   }, [updateSearch])
 
-  // comment adam hello
-
-
+  
   return <section className='homepage'>
 
     <section className='hero is-fullheight-with-navbar' >
@@ -369,14 +381,19 @@ const Home = () => {
           {/* <button id="speech" className="btn" style={{ position: 'relative', marginTop: '25%' }}> */}
           {/* <i className="fa fa-microphone" aria-hidden="true"></i> */}
           {/* </button> */}
-
+          {/* <button 
+            className="button" 
+            onClick={() => {resetAllValues()}}>
+              Clear
+          </button> */}
           <Vocal
             onStart={_onVocalStart}
             onResult={_onVocalResult}
-            onEnd={() => {
-              console.log('recoding stopped')
-              setRecording(false)
-            }}
+            // onEnd={() => {
+            //   console.log('recoding stopped')
+            //   setRecording(false)
+            // }}
+            // onClick={() => {resetAllValues()}}
             style={{ width: 100, height: 100, position: 'absolute', left: '17%', top: '17%' }}
           >
             <button id="speech" className="btn" data-testid="__vocal-root__" role="button" aria-label="start recognition" style={{ position: 'relative', marginTop: '20%', zIndex: '0', marginBottom: '15px' }}>
@@ -395,28 +412,32 @@ const Home = () => {
             getSearchVal(result.toLocaleLowerCase())
             console.log('search value: ', searchVal)
             setUpdateSearch(!updateSearch)
-            if (currentContact.toLowerCase() !== 'none') {
-              handleContactInfo(currentContact.toLowerCase())
-            }
-            sendToCalendar()
+            setSendInfo(true)
           }}>
-            <input placeholder="Input Request" defaultValue={result} className='input my-2' onChange={(e) => {
-              getSearchVal(e.target.value.toLocaleLowerCase())
-              setResult(e.target.value.toLocaleLowerCase())
-            }}></input>
+            <input placeholder="Input Request" value={result} className='input my-2' onChange={(e) => { 
+              // getSearchVal(e.target.value.toLocaleLowerCase())
+              setResult(e.target.value)
+            }}
+            onFocus={() => {resetAllValues()}}
+            ></input>
             <button className='button'>Submit</button>
           </form>
 
-
-          <p className='subtitle mt-2'>{print}</p>
-
+          <p className=' mt-2 subtitle'>{print}</p>
+          {/* {print && <div className="columns is-vcentered is-mobile mt-2">
+            <div className='column subtitle has-text-left'>{print}</div>
+            <div className="column is-narrow">
+              <button className="button is-small is-light" onClick={() => {
+                googleLogin()
+              }}>
+                Revert
+              </button>
+            </div>
+          </div>} */}
 
           <hr className="has-background-success mt-2 mx-2"></hr>
           <div className="columns is-vcentered is-mobile mb-0">
-            {/* <button className='button' onClick={(e) => {
-              sendToCalendar()
-            }}>Add to calendar Test</button> */}
-            <div className='column help'>Connect rmbr to your Google Calendar:</div>
+            <div className='column help has-text-left'>Connect rmbr to your Google Calendar:</div>
             <div className="column is-narrow">
               <button className="button is-small is-light" onClick={() => {
                 googleLogin()
