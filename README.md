@@ -244,7 +244,5 @@ def signup():
 * Adding reminder functionality for non-Google-Calendar users (email reminders or other)
 
 ## Screenshots
-<img src="frontend/images/screenshots/home.png" alt="home Screen" width="300px">
-<img src="frontend/images/screenshots/contacts.png" alt="contacts Screen" width="300px">
-<img src="frontend/images/screenshots/liz1.png" alt="contacts Screen" width="300px">
-<img src="frontend/images/screenshots/liz2.png" alt="contacts Screen" width="300px">
+<img src="frontend/images/screenshots/home.png" alt="home Screen" width="300px"> <img src="frontend/images/screenshots/contacts.png" alt="contacts Screen" width="300px">
+<img src="frontend/images/screenshots/liz1.png" alt="contacts Screen" width="300px"> <img src="frontend/images/screenshots/liz2.png" alt="contacts Screen" width="300px">
