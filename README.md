@@ -1,7 +1,15 @@
 ## ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) General Assembly, Software Engineering Immersive
 # Project 4: Full-stack app with Python Flask RESTful API
 
-# Rmbr Assistant
+```
+ _______    ____    ____ ______   _______    
+|_   __ \  |_   \  /   _|_   _ \ |_   __ \   
+  | |__) |   |   \/   |   | |_) |  | |__) |  
+  |  __ /    | |\  /| |   |  __/.  |  __ /   
+ _| |  \ \_ _| |_\/_| |_ _| |__) |_| |  \ \_ 
+|____| |___|_____||_____|_______/|____| |___|
+```
+### Rmbr Assistant
 Made by [Florian Wilisch](https://github.com/florian-wilisch) and [Adam Lee Osgood](https://github.com/adwam12).
 
 ## Overview
