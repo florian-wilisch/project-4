@@ -240,10 +240,10 @@ def signup():
 
 
 ## Wins and Takeaways
-* Learned to use the Google APIs (Natural Language API)
-* Learned to implement and use an SQL database
-* Learned to create an edit-page, dynamically adding new fields as items are being added 
-* Learned error handling on the login & register pages via Python
+* Learned to use the Google APIs (Natural Language API).
+* Learned to implement and use an SQL database.
+* Learned to create an edit-page, dynamically adding new fields as items are being added.
+* Learned error handling on the login & register pages via Python.
 
 ## Future Features
 * Adding reminders that aren't linked to a person ("remind me to do laundy")
